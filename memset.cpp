@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <vector>
 
 int getAddr(std::any data){
     return &data;                       // returns the address of the first byte of data
@@ -8,13 +9,15 @@ int * getAllAdresses(std::any data){
     
     int max = sizeof(data);             // maximum memory address of data
     int min = &data;                    // starting of data
-    int * addresses[max];               // 
+    std::vector<int> addresses;
+    addresses.resize(max);
 
     for (int i = 0; i != max; i++){     
-        addresses[i]=min+i;             // [0] ─> 0x33, [1] ─> 0x34 etc.
+        addresses.push_back(min+i);             // [0] ─> 0x33, [1] ─> 0x34 etc.
     }  
     return addresses;
 }
+
 
 bool memread(int addr){                 // read the data stored at a certain address
     return true;                        
@@ -36,7 +39,10 @@ int main ()
   memset (str,'-',6);
 
     C++:    memset (starting value of data, char data, how many bytes to be filled)
-    LION:   memorySet(address, value (1 byte)) or memorySet(adress start, )
+    LION:   memorySet(address, value (1 byte)) 
+            memorySet(adress start, values (multiple bytes))
+
+    
 
 
   puts (str);
