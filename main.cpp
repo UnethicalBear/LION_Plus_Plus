@@ -21,16 +21,16 @@
     years_old = str(today.year - 2020)
 
     if years_old[-1] == "1":
-      print(f"Happy {years_old}st Birthday, LION! ")
+      std::cout << f"Happy {years_old}st Birthday, LION! ")
     
     elif years_old[-1] == "2":
-      print(f"Happy {years_old}nd Birthday, LION! ")
+      std::cout << f"Happy {years_old}nd Birthday, LION! ")
     
     elif years_old[-1] == "3":
-      print(f"Happy {years_old}rd Birthday, LION! ")
+      std::cout << f"Happy {years_old}rd Birthday, LION! ")
 
     else:
-      print(f"Happy {years_old}th Birthday, LION! ")
+      std::cout << f"Happy {years_old}th Birthday, LION! ")
 
 LION_BDAY_MESSAGE()
 
@@ -57,7 +57,7 @@ LION_BDAY_MESSAGE()
 
 
 // if (DEBUG:
-//   print(externalfunctions)
+//   std::cout << externalfunctions)
 
 std::map<std::string,std::string> variables;
 std::map<std::string,std::string> fVariables;
@@ -82,7 +82,7 @@ std::vector<std::string> keywords    = {"//", "auto", "private", "public","inher
 std::vector<std::string> bValues    = {"true", "false", "REEEEEEEEEEEEEE"};
 
 
-// '''CLASSES FOR SAVED VARIABLES'''
+// CLASSES FOR SAVED VARIABLES
 
 class JSON_saver {          // this class needs to be able to read a binary and convert it to JSON and vice versa.
 
@@ -95,13 +95,13 @@ public:
   }
   void read(std::string file){
     this->file = file;
-    // return pickle.load(open(self.file_, "rb"))
+    // return pickle.load(open(this->file_, "rb"))
     }
   
   void writeDict(std::map<std::string,std::string> dictionary){
 
     // saved_json = pickle.dumps(dictionary)
-    // f = open(self.file_, "wb")
+    // f = open(this->file_, "wb")
     // f.write(saved_json)
     // f.close()
     
@@ -111,7 +111,7 @@ public:
 
 
 
-// '''TOKEN TYPES'''
+// TOKEN TYPES
 
 #define TO_RT  'RT' 
 #define TO_DICT  'DICT'
@@ -149,24 +149,20 @@ public:
 
 
 class Classes {
-private:
+public:
     std::string inheritList;
     std::string mode;
-
-public:
-    Classes(std::string inheritList, std::string defaultClassMode){
+    Classes(std::string inheritList){
         this->inheritList = inheritList;
-        this->mode = defaultClassMode;
+        this->mode = "private";
     }
 
 };
     
 class Functions {
-
-private:
+public:
     std::vector<std::string> argslist;
     std::vector<std::string> executelist;
-public:
     Functions(std::vector<std::string>executelist,std::vector<std::string>argslist){
         this->argslist = argslist;
         this->executelist = executelist;
@@ -177,194 +173,214 @@ public:
     } 
 };
 
+// VARIABLE SCOPES
 
-class Level_Handler:
-private:
+class Level_Handler {
+public:
+  bool isClass = false;
+  std::string class_name;
+  std::string mode = "private";
+  std::any cl;
     
-  def __init__(self):
-    self.isClass = False
-    self.class_name = ""
-    self.mode = defaultClassMode
-    self.cl = {}
+  Level_Handler(std::string className){
+    this->class_name=className;
+  }
 
-'''VARIABLE SCOPES'''
+};
 
-for i in range(2000):
-  variables[i] = {"__internal":Level_Handler()}
     
-def convertToInt(value):
-  isInt = False
-  try:
-    value1 = int(value)
-  except:
-    return isInt,""
-  isInt = True
-  return isInt,value1
+bool canBeInteger(float value){
+  bool isInt = false;
+  try {
+    int value1 = int(value);
+    return value1 == value;
+  }
+  catch(...){
+    return false;
+  }
+}
+// ERROR CLASS
+class Error{
+public:
+  Error(std::string type_,std::string line, std::string file_, std::string details){
+    std::cout << type_ << "Error: [File " << file_ << " Line " << line << details << std::endl << "\nPress enter or return to close the application...";
+    std::cin;
+    exit(-1);
+  }
+}
 
-'''ERROR CLASS'''
-class Error:
-  def __init__( self, type_,line,file_, details):
+// TOKEN CLASS THAT LEXER RETURNS
+class Token{
+public:
 
-    print(type_ + f'Error: [File `{file_}`: Line {line}]: '+ details)
-    input("\nPress enter or return to close the application...")
-    sys.exit(-1)  
+  std::string type;
+  std::string value;
+  int level;
+  std::string line;
+
+  Token(std::string type, std::string value=NULL,int level=NULL, std::string line = "unknown"){
+    this->type = type;
+    this->value = value;
+    this->level = level;
+    this->line = line;
+  }
+  operator std::string () const {
+    return this->type + " : " + this->value + " on line " + this->line;
+  }
+};
 
 
-'''MATHS CLASS'''
-class Maths1:
-    def __init__(self):
-        self.argslist = []
-    def selfparse(self,args):
-      return self.parse(args)
-    def parse(self,args):
-        argslist = args
-        try:
-          for i in range(len(argslist)):
-            if argslist[i] == None:
+// MATHS CLASS
+class mathsClass {
+
+public:
+  std::vector<Token> argslist;
+  int level;
+  std::vector<std::string> bracketnums;
+
+  mathsClass(){
+  }
+  ~mathsClass(){
+    this->argslist.clear();
+  }
+  //  selfparse(self,args):
+    // return this->parse(args)
+  std::vector<Token> parse(std::vector<Token> args){
+    this->argslist = args;
+    try {
+      for (int i = 0; i != this->argslist.size(); i++){
+        if (argslist[i].type()=="" || argslist[-1].type == TO_INTERNAL){
+          argslist.erase(argslist.begin()+i);
+        }
+      }
+    }
+    catch(...){}
+
+    int length = argslist.size();
+    int i = 0;
+    try {
+      for (int r = 0; r != argslist.size(); r++){
+        if (argslist[r].type == TO_LBRACKET){
+          level = argslist[r].level;
+          bracketnums = {};
+          int first = r;
+          int last = 0;
+          int count = r + 1;
+          while(true){
+            if (argslist[count].type != TO_RBRACKET){
+              bracketnums.push_back(argslist[count]);
+              count += 1;
+            }
+            else {
+              if (argslist[count].level == level){
+                last = count;
+                std::vector<Token> value = this->selfparse(bracketnums);
+                del argslist[first:last];
+                argslist[first] = value[0];
                 
-                del argslist[i]
-            if argslist[-1].type == "INTERNALFUNCTION":
-              
-                del argslist[i]
-        except:
-          pass
-
-        length = len(argslist)
-        i = 0
-        try:
-          for r in range(len(argslist)):
-            if argslist[r].type == TO_LBRACKET:
-              
-              level = argslist[r].level
-              bracketnums = []
-              first,last = r,0
-              count = r + 1
-              while True:
-                if argslist[count].type != TO_RBRACKET:
-                  
-                  bracketnums.append(argslist[count])
-                  count += 1
-                else:
-                  if argslist[count].level == level:
-                    last = count
-                    
-                    value = self.selfparse(bracketnums)
-                    
-                    del argslist[first:last]
-                    argslist[first] = value[0]
-                    
-                    break
-        except:
-          pass
-        state = 0
-        i = 0
-        while True:
-          try:
+                break;
+              }
+            }
+          }
+    catch(...){
+      pass;
+    }
+    state = 0
+    i = 0
+    while true:
+      try:
+        
+        if argslist[i].type=="INTERNALFUNCTION":
+          del argslist[i]
+          length -= 1
+          i -= 1
+        
+        if argslist[i].type == "SPECIALCHARACTERS":
+          if argslist[i].value == "=":
+            del argslist[i]
+            length -= 1
+            i -= 1
+          if state == 0:
             
-            if argslist[i].type=="INTERNALFUNCTION":
-              del argslist[i]
-              length -= 1
+            if argslist[i].value == "*":
+              result = argslist[i-1].value * argslist[i+1].value
+              argslist[i] = Token(argslist[i-1].type,result,argslist[i-1].level)
+              del argslist[i+1]
+              del argslist[i-1]
+              length -= 2
+              i -= 1
+              
+            elif argslist[i].value == "/":
+              result = argslist[i-1].value / argslist[i+1].value
+              argslist[i] = Token(argslist[i-1].type,result,argslist[i-1].level)
+              del argslist[i+1]
+              del argslist[i-1]
+              length -= 2
+              i -= 1
+          if state == 1:
+            
+            
+            if argslist[i].value == "-":
+              result = argslist[i-1].value - argslist[i+1].value
+              argslist[i] = Token(argslist[i-1].type,result,argslist[i-1].level)
+              del argslist[i+1]
+              del argslist[i-1]
+              length -= 2
               i -= 1
             
-            if argslist[i].type == "SPECIALCHARACTERS":
-              if argslist[i].value == "=":
-                del argslist[i]
-                length -= 1
-                i -= 1
-              if state == 0:
-                
-                if argslist[i].value == "*":
-                  result = argslist[i-1].value * argslist[i+1].value
-                  argslist[i] = Token(argslist[i-1].type,result,argslist[i-1].level)
-                  del argslist[i+1]
-                  del argslist[i-1]
-                  length -= 2
-                  i -= 1
-                  
-                elif argslist[i].value == "/":
-                  result = argslist[i-1].value / argslist[i+1].value
-                  argslist[i] = Token(argslist[i-1].type,result,argslist[i-1].level)
-                  del argslist[i+1]
-                  del argslist[i-1]
-                  length -= 2
-                  i -= 1
-              if state == 1:
-                
-                
-                if argslist[i].value == "-":
-                  result = argslist[i-1].value - argslist[i+1].value
-                  argslist[i] = Token(argslist[i-1].type,result,argslist[i-1].level)
-                  del argslist[i+1]
-                  del argslist[i-1]
-                  length -= 2
-                  i -= 1
-                
-                elif argslist[i].value == "+":
-                  result = argslist[i-1].value + argslist[i+1].value
-                  argslist[i] = Token(argslist[i-1].type,result,argslist[i-1].level)
-                  del argslist[i+1]
-                  del argslist[i-1]
-                  length -= 2
-                  i -= 1
-                
-            i += 1
-            continue
-          except IndexError:
-            if state == 0:
-              state = 1
-              i = 0
-            elif state == 1:
-              break
-          except TypeError:
-            Error("Type", argslist[i].line, fileControl.fileName, "invalid comparotor")
-        return argslist
+            elif argslist[i].value == "+":
+              result = argslist[i-1].value + argslist[i+1].value
+              argslist[i] = Token(argslist[i-1].type,result,argslist[i-1].level)
+              del argslist[i+1]
+              del argslist[i-1]
+              length -= 2
+              i -= 1
+            
+        i += 1
+        continue
+      except IndexError:
+        if state == 0:
+          state = 1
+          i = 0
+        elif state == 1:
+          break
+      except TypeError:
+        Error("Type", argslist[i].line, fileControl.fileName, "invalid comparotor")
+    return argslist
                     
     
 class Struct:
   def __init__(self,keys,values,):
-    self.keys = keys
-    self.values = values
-    self.struct = self.makeStruct()
+    this->keys = keys
+    this->values = values
+    this->struct = this->makeStruct()
   
   def makeStruct(self):
     res = {}
 
-    if not len(self.keys) == len(self.values): return-1
-    for i in range(len(self.keys)):
-      res[self.keys[i]] = self.values[i]
+    if not len(this->keys) == len(this->values): return-1
+    for i in range(len(this->keys)):
+      res[this->keys[i]] = this->values[i]
     return res
 
 
-'''TOKEN CLASS THAT LEXER RETURNS'''
-class Token:
-  def __init__(self, type, value=None,level=None, line = "unknown"):
-    self.type = type
-    self.value = value
-    self.level = level
-    self.line = line
-    self.li = line
-
-  def __repr__(self):
-    return f"{self.type}:{self.value} on line {self.li}"
-  
-
-'''PARSER CLASSES'''
+// PARSER CLASSES
 class BUILTIN_FUNCTION:
   def __init__(self,command,args):
-    self.command = command
-    self.args = args
+    this->command = command
+    this->args = args
 
 
 class COMMENT:
   def __init__(self,command,args):
-    self.command = 'comment'
-    self.args = None
+    this->command = 'comment'
+    this->args = NULL
 
 
-'''FILE INPUT CLASS'''
+FILE INPUT CLASS
 class fileInput:
-  def __init__(self, fileName = None):
-    self.fileName = fileName
+  def __init__(self, fileName = NULL):
+    this->fileName = fileName
 
   def getFile(self):
     try:
@@ -373,21 +389,21 @@ class fileInput:
       fileName = input('No file was found to be run. Please input one now: ')
 
       if (not os.path.exists(fileName)):
-        print()
-        print("INVALID FILE NAME")
+        std::cout << )
+        std::cout << "INVALID FILE NAME")
         input("\nPress enter or return to close the application...")
         sys.exit()
 
     
-    self.fileName = fileName
+    this->fileName = fileName
     
   
-  def getFileContents(self, fileName =  None):
+  def getFileContents(self, fileName =  NULL):
     
-    if fileName == None:
-      fileName = self.fileName
+    if fileName == NULL:
+      fileName = this->fileName
     else:
-      self.fileName = fileName
+      this->fileName = fileName
 
     if not os.path.exists(fileName):
       return -1
@@ -400,7 +416,7 @@ class fileInput:
         if contents[-1] != "\n": contents += "\n"
       return contents
     
-'''ANYASIS CLASS THAT RETURNS RAW TOKENS'''
+ANYASIS CLASS THAT RETURNS RAW TOKENS
 
 global cbracketnum,bracketnum,sbracketnum
 sbracketnum = 0
@@ -408,20 +424,20 @@ cbracketnum = 0
 bracketnum = 0
 class Anyasis:
 
-  def __init__(self): self.li = 0
+  def __init__(self): this->li = 0
 
   def make_command(self, text):
     global cbracketnum,bracketnum,sbracketnum
 
-    isString = False
+    isString = false
     
-    isNum = False
+    isNum = false
     command_parts = []
     current_text_list = ""
     
     for i in range(len(text)):
       
-      if text[i] == "[" and isString == False and isNum == False:
+      if text[i] == "[" and isString == false and isNum == false:
         sbracketnum += 1
 
         if current_text_list.strip() != "":
@@ -432,7 +448,7 @@ class Anyasis:
 
         
         continue
-      if text[i] == "]" and isString == False and isNum == False:
+      if text[i] == "]" and isString == false and isNum == false:
 
         if current_text_list.strip() != "":
           command_parts.append(Token(TO_RT, current_text_list,cbracketnum ))
@@ -440,9 +456,10 @@ class Anyasis:
         
         command_parts.append(Token(TO_RSBRACKET, text[i],sbracketnum ))
         sbracketnum -= 1
-        continue
-      if text[i] == "{" and isString == False and isNum == False:
-        cbracketnum += 1
+        continue;
+
+      if (text[i] == "{" && isString == false && isNum == false){
+        cbracketnum += 1;
 
         if current_text_list.strip() != "":
           command_parts.append(Token(TO_RT, current_text_list,cbracketnum))
@@ -452,7 +469,7 @@ class Anyasis:
 
         
         continue
-      if text[i] == "}" and isString == False and isNum == False:
+      if text[i] == "}" and isString == false and isNum == false:
 
         if current_text_list.strip() != "":
           command_parts.append(Token(TO_RT, current_text_list,cbracketnum ))
@@ -461,7 +478,7 @@ class Anyasis:
         command_parts.append(Token(TO_RCBRACKET, text[i],cbracketnum ))
         cbracketnum -= 1
         continue
-      if text[i] == "(" and isString == False and isNum == False:
+      if text[i] == "(" and isString == false and isNum == false:
         bracketnum += 1
         if current_text_list.strip() != "":
           command_parts.append(Token(TO_RT, current_text_list,cbracketnum ))
@@ -470,7 +487,7 @@ class Anyasis:
         command_parts.append(Token(TO_LBRACKET, text[i],bracketnum ))
         
         continue
-      if text[i] == ")" and isString == False and isNum == False:
+      if text[i] == ")" and isString == false and isNum == false:
         
         if current_text_list.strip() != "":
           command_parts.append(Token(TO_RT, current_text_list,cbracketnum))
@@ -482,20 +499,20 @@ class Anyasis:
         
         continue
       
-      if text[i] == '"' and isString == True:
-        isString = False
+      if text[i] == '"' and isString == true:
+        isString = false
         command_parts.append(Token(TO_STRING, current_text_list,cbracketnum))
         current_text_list = ""
         continue
-      elif text[i] == '"' and isString == False:
-        isString = True
+      elif text[i] == '"' and isString == false:
+        isString = true
 
       else:
         
-        if isString == False and text[i] == " " and current_text_list != "": 
+        if isString == false and text[i] == " " and current_text_list != "": 
           command_parts.append(Token(TO_RT, current_text_list,cbracketnum))
           current_text_list = ""
-        elif isString == False and text[i] == ",": 
+        elif isString == false and text[i] == ",": 
           if current_text_list != "":
             command_parts.append(Token(TO_RT, current_text_list,cbracketnum))
             current_text_list = ""
@@ -509,7 +526,7 @@ class Anyasis:
 
         else:
           if text[i] == " ":
-            if isString == True:
+            if isString == true:
               current_text_list += text[i]
             else:
               continue
@@ -521,61 +538,61 @@ class Anyasis:
     
     return command_parts
 
-'''LEXER CLASS'''
+LEXER CLASS
 class Lexer:
   
   def __init__(self,file):
-    self.token_return_list = []
-    self.li = 1
-    self.file = file
-    self.current_tok = None
+    this->token_return_list = []
+    this->li = 1
+    this->file = file
+    this->current_tok = NULL
       
   def make_tokens(self,tok_list):
-    self.token_return_list = tok_list
+    this->token_return_list = tok_list
     for i in range(len(tok_list)):
       level = tok_list[i].level
       
       if tok_list[i].type == TO_RT:
         tok_list[i].value = tok_list[i].value.replace(" ","")
-        tok_list[i].line = self.li
-      self.current_tok = tok_list[i]
-      if self.current_tok.type == TO_STRING:
-        self.current_tok.value = self.current_tok.value.replace("{}","",)
-        self.current_tok.li = self.li
-        self.current_tok.line = self.li
-      if self.current_tok.type != TO_STRING:
-        self.current_tok.line = self.li
-        gettype,newvalue = convertToInt(self.current_tok.value)
-        if gettype == True:
-          self.token_return_list[i] = Token(TO_INT, newvalue,level, line = self.li)
+        tok_list[i].line = this->li
+      this->current_tok = tok_list[i]
+      if (this->current_tok.type == TO_STRING){
+        this->current_tok.value = this->current_tok.value.replace("{}","");
+        this->current_tok.li = this->li
+        this->current_tok.line = this->li
+      if this->current_tok.type != TO_STRING:
+        this->current_tok.line = this->li
+        gettype,newvalue = convertToInt(this->current_tok.value)
+        if gettype == true:
+          this->token_return_list[i] = Token(TO_INT, newvalue,level, line = this->li)
 
-        if self.current_tok.value in b_values:
-          self.token_return_list[i] = Token(TO_BOOL, self.current_tok.value, level, line = self.li)
+        if this->current_tok.value in b_values:
+          this->token_return_list[i] = Token(TO_BOOL, this->current_tok.value, level, line = this->li)
         
-        if self.current_tok.value in functions:
-          self.token_return_list[i] = Token(TO_FUNCTION, self.current_tok.value,level, line= self.li)
-        if self.current_tok.value in externalfunctions:
-          self.token_return_list[i] = Token("EXTERNAL_FUNCTION", self.current_tok.value,level, line= self.li)
+        if this->current_tok.value in functions:
+          this->token_return_list[i] = Token(TO_FUNCTION, this->current_tok.value,level, line= this->li)
+        if this->current_tok.value in externalfunctions:
+          this->token_return_list[i] = Token("EXTERNAL_FUNCTION", this->current_tok.value,level, line= this->li)
       
-        if self.current_tok.value in comparators:
-          self.token_return_list[i] = Token(TO_COMPARATOR, self.current_tok.value,level,  line = self.li)
+        if this->current_tok.value in comparators:
+          this->token_return_list[i] = Token(TO_COMPARATOR, this->current_tok.value,level,  line = this->li)
           continue
-        if self.current_tok.value in keywords:
-          self.token_return_list[i] = Token(TO_KEYWORD, self.current_tok.value,level,  line = self.li)
+        if this->current_tok.value in keywords:
+          this->token_return_list[i] = Token(TO_KEYWORD, this->current_tok.value,level,  line = this->li)
           continue
-        if self.current_tok.value in characters:
-          if self.current_tok.value != "":
-            self.token_return_list[i] = Token(TO_SPECIALCHARACTERS, self.current_tok.value,level,  line = self.li)
+        if this->current_tok.value in characters:
+          if this->current_tok.value != "":
+            this->token_return_list[i] = Token(TO_SPECIALCHARACTERS, this->current_tok.value,level,  line = this->li)
         
-        if self.current_tok.value not in functions:
+        if this->current_tok.value not in functions:
 
-          # self.current_tok.line = self.li
-          self.token_return_list[i].line = self.li
+          // this->current_tok.line = this->li
+          this->token_return_list[i].line = this->li
 
     
-    self.li +=1
-    if DEBUG: print(self.li)
-    return self.token_return_list
+    this->li +=1
+    if DEBUG: std::cout << this->li)
+    return this->token_return_list
   
         
 class Parser:
@@ -600,10 +617,10 @@ class Parser:
             args_toks.append(temp_toks)
 
           if len(temp_toks) >  1:
-            args_toks.append(self.selfparse(temp_toks))
+            args_toks.append(this->selfparse(temp_toks))
 
           if len(temp_toks) == 0:
-            args_toks.append(None)
+            args_toks.append(NULL)
 
           
           temp_toks = []
@@ -617,9 +634,9 @@ class Parser:
       
     
   def selfparse(self,toks):
-    return self.parse(toks)
+    return this->parse(toks)
   def parsevalues(self,toks,toknum1):
-    linetrue = False
+    linetrue = false
     commandcontents = []
     toknum = toknum1
     level = toks[toknum].level
@@ -628,13 +645,13 @@ class Parser:
       
       level = toks[toknum].level
       toknum += 1
-    while linetrue == False:
-            if toks[toknum].level == None:
+    while linetrue == false:
+            if toks[toknum].level == NULL:
               toks[toknum].level = 0
             if toks[toknum].type == TO_RBRACKET and toks[toknum].level == level:
             
               return commandcontents
-              linetrue = True
+              linetrue = true
             if toks[toknum].type == TO_FUNCTION:
                 
                 functionline = []
@@ -651,7 +668,7 @@ class Parser:
                         functionline.append(toks[toknum])
                         break
                     toknum += 1
-                commandcontents.append(self.selfparse(functionline))
+                commandcontents.append(this->selfparse(functionline))
 
             
                 
@@ -667,7 +684,7 @@ class Parser:
               
           
             if toks[toknum].type == TO_EOL:
-              linetrue = True
+              linetrue = true
               toknum += 1
               
               return commandcontents
@@ -687,14 +704,14 @@ class Parser:
           continue
 
       if toks[i].value == "/*":
-        isDone = False
-        while True:
+        isDone = false
+        while true:
           try:
             
             if toks[i].type == TO_KEYWORD and toks[i].value == "*/" or isDone:
 
               i+=1
-              commandlist.append(BUILTIN_FUNCTION("comment", None))
+              commandlist.append(BUILTIN_FUNCTION("comment", NULL))
               break
 
             else:
@@ -710,13 +727,13 @@ class Parser:
           except IndexError:
             Error("Syntax", "line", "file", "details")
         
-        commandlist.append(BUILTIN_FUNCTION("comment", None))
+        commandlist.append(BUILTIN_FUNCTION("comment", NULL))
           
 
 
       elif toks[i].value == "//":
         toknum = i+1
-        commandlist.append(BUILTIN_FUNCTION("comment", None))
+        commandlist.append(BUILTIN_FUNCTION("comment", NULL))
         while toks[toknum] != TO_EOL:
           toks[toknum].type =TO_INTERNAL
 
@@ -727,7 +744,7 @@ class Parser:
             temp = (toks[toknum])
             i += 1
             if DEBUG:
-              print("COMMENTED: ", temp)
+              std::cout << "COMMENTED: ", temp)
             del temp
           except:
             i -= 1
@@ -741,11 +758,11 @@ class Parser:
       elif toks[i].type == "EXTERNAL_FUNCTION":
         if toks[i].value in externalfunctions:
           
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           
-          commandcontents = self.parsevalues(toks,toknum)
+          commandcontents = this->parsevalues(toks,toknum)
           
           
           commandlist.append(BUILTIN_FUNCTION(toks[i].value,commandcontents))
@@ -755,14 +772,14 @@ class Parser:
         if toks[i].value == "error":
 
           toknum = i +1
-          linetrue = False
+          linetrue = false
 
           tokens = []
 
           while not linetrue:
 
             if toks[toknum].type == TO_EOL:
-              linetrue = True
+              linetrue = true
             else:
               tokens.append(toks[toknum])
             toknum += 1
@@ -772,11 +789,11 @@ class Parser:
       
         if toks[i].value == "this":
 
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           varname = toks[toknum].value
-          tokens = self.parsevalues(toks,toknum)
+          tokens = this->parsevalues(toks,toknum)
           
           commandlist.append(BUILTIN_FUNCTION("this", tokens))
 
@@ -785,7 +802,7 @@ class Parser:
         if toks[i].value == "class":
 
           inheritList = []
-          linetrue = False
+          linetrue = false
           executelist = []
           toknum = i + 1
 
@@ -798,35 +815,35 @@ class Parser:
             
             toknum += 1 
             if toks[toknum].type != TO_LBRACKET:
-              while linetrue == False:
+              while linetrue == false:
                 if toks[toknum].type != TO_RBRACKET: 
                                 
                   inheritList.append(toks[toknum])
                   toknum += 1
                 if toks[toknum].type == TO_RBRACKET and toks[toknum].level == level:
-                  linetrue = True
+                  linetrue = true
                   toknum+= 1
 
                   
-              linetrue = False
-              getbracket = True
-              while getbracket == True:
+              linetrue = false
+              getbracket = true
+              while getbracket == true:
                 
                 if toks[toknum].type == TO_LCBRACKET: 
                   level = toks[toknum].level
                   
-                  while linetrue == False:
+                  while linetrue == false:
                       
                       executelist.append(toks[toknum])
                         
                       if toks[toknum].type == TO_RCBRACKET and toks[toknum].level == level:
                         
-                        linetrue = True
+                        linetrue = true
                         
-                        executelist1 = self.selfparse(executelist)
+                        executelist1 = this->selfparse(executelist)
 
                         commandlist.append((BUILTIN_FUNCTION("class",[name, inheritList,executelist1])))
-                        getbracket = False
+                        getbracket = false
                         
                         toknum = 0
                         break
@@ -843,7 +860,7 @@ class Parser:
 
         if toks[i].value == "for":
           conditionlist = []
-          linetrue = False
+          linetrue = false
           executelist = []
           toknum = i + 1
           if toks[toknum].type == TO_LBRACKET:
@@ -851,34 +868,34 @@ class Parser:
             
             toknum += 1 
             if toks[toknum].type != TO_LBRACKET:
-              while linetrue == False:
+              while linetrue == false:
                 if toks[toknum].type != TO_RBRACKET: 
                                 
                   conditionlist.append(toks[toknum])
                   toknum += 1
                 if toks[toknum].type == TO_RBRACKET and toks[toknum].level == level:
-                  linetrue = True
+                  linetrue = true
                   toknum+= 1
                   
-              linetrue = False
-              getbracket = True
-              while getbracket == True:
+              linetrue = false
+              getbracket = true
+              while getbracket == true:
                 
                 if toks[toknum].type == TO_LCBRACKET: 
                   level = toks[toknum].level
                   
-                  while linetrue == False:
+                  while linetrue == false:
                       
                       executelist.append(toks[toknum])
                         
                       if toks[toknum].type == TO_RCBRACKET and toks[toknum].level == level:
                         
-                        linetrue = True
+                        linetrue = true
                         
-                        executelist1 = self.selfparse(executelist)
+                        executelist1 = this->selfparse(executelist)
                         
                         commandlist.append((BUILTIN_FUNCTION("for",[conditionlist,executelist1])))
-                        getbracket = False
+                        getbracket = false
                         
                         toknum = 0
                         break
@@ -892,7 +909,7 @@ class Parser:
         if toks[i].value == "if":
           
           conditionlist = []
-          linetrue = False
+          linetrue = false
           executelist = []
           toknum = i + 1
           if toks[toknum].type == TO_LBRACKET:
@@ -900,23 +917,23 @@ class Parser:
             
             toknum += 1 
             if toks[toknum].type != TO_LBRACKET:
-              while linetrue == False:
+              while linetrue == false:
                 if toks[toknum].type != TO_RBRACKET: 
                                 
                   conditionlist.append(toks[toknum])
                   toknum += 1
                 if toks[toknum].type == TO_RBRACKET and toks[toknum].level == level:
-                  linetrue = True
+                  linetrue = true
                   toknum+= 1
                   
-              linetrue = False
-              getbracket = True
-              while getbracket == True:
+              linetrue = false
+              getbracket = true
+              while getbracket == true:
                 
                 if toks[toknum].type == TO_LCBRACKET: 
                   level = toks[toknum].level
                   
-                  while linetrue == False:
+                  while linetrue == false:
                         
                       executelist.append(toks[toknum])
                       
@@ -924,13 +941,13 @@ class Parser:
                       if toks[toknum].type == TO_RCBRACKET and toks[toknum].level == level:
                         
                         
-                        linetrue = True
+                        linetrue = true
                         
-                        executelist1 = self.selfparse(executelist)
+                        executelist1 = this->selfparse(executelist)
                         
                         
                         commandlist.append((BUILTIN_FUNCTION("if",[conditionlist,executelist1])))
-                        getbracket = False
+                        getbracket = false
                         
                         toknum = 0
                         break
@@ -940,7 +957,7 @@ class Parser:
           toknum += 1   
         
         if toks[i].value == "get":
-          linetrue = False
+          linetrue = false
           
           commandcontents = []
           toknum = i + 2
@@ -948,11 +965,11 @@ class Parser:
           level = toks[toknum].level
           toknum += 1
           
-          commandcontents = self.parsevalues(toks,toknum)
-          #print(varname,commandcontents,level)
+          commandcontents = this->parsevalues(toks,toknum)
+          //std::cout << varname,commandcontents,level)
           commandlist.append(BUILTIN_FUNCTION("get",[varname,commandcontents,level]))
         if toks[i].value == "delindex":
-          linetrue = False
+          linetrue = false
           
           commandcontents = []
           toknum = i + 2
@@ -960,11 +977,11 @@ class Parser:
           level = toks[toknum].level
           toknum += 1
           
-          commandcontents = self.parsevalues(toks,toknum)
+          commandcontents = this->parsevalues(toks,toknum)
           
           commandlist.append(BUILTIN_FUNCTION("delindex",[varname,commandcontents,level]))
         if toks[i].value == "dict":
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           level = toks[toknum].level
@@ -973,13 +990,13 @@ class Parser:
             
             level = toks[toknum].level
             toknum += 1
-          while linetrue == False:
-                  if toks[toknum].level == None:
+          while linetrue == false:
+                  if toks[toknum].level == NULL:
                     toks[toknum].level = 0
                   if toks[toknum].type == TO_RSBRACKET and toks[toknum].level == level:
                     
                     commandlist.append((BUILTIN_FUNCTION("dict",[commandcontents])))
-                    linetrue = True
+                    linetrue = true
                     break
                   if toks[toknum].type == TO_FUNCTION:
                       
@@ -997,7 +1014,7 @@ class Parser:
                               functionline.append(toks[toknum])
                               break
                           toknum += 1
-                      commandcontents.append(self.selfparse(functionline))
+                      commandcontents.append(this->selfparse(functionline))
 
                   
                       
@@ -1013,7 +1030,7 @@ class Parser:
                     
                 
                   if toks[toknum].type == TO_EOL:
-                    linetrue = True
+                    linetrue = true
                     toknum += 1
                     
                     
@@ -1022,7 +1039,7 @@ class Parser:
                   toks[toknum] = Token(TO_INTERNAL)
                   toknum += 1
         if toks[i].value == "array":
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           level = toks[toknum].level
@@ -1031,13 +1048,13 @@ class Parser:
             
             level = toks[toknum].level
             toknum += 1
-          while linetrue == False:
-                  if toks[toknum].level == None:
+          while linetrue == false:
+                  if toks[toknum].level == NULL:
                     toks[toknum].level = 0
                   if toks[toknum].type == TO_RSBRACKET and toks[toknum].level == level:
                     
                     commandlist.append((BUILTIN_FUNCTION("array",[commandcontents])))
-                    linetrue = True
+                    linetrue = true
                     break
                   if toks[toknum].type == TO_FUNCTION:
                       
@@ -1055,7 +1072,7 @@ class Parser:
                               functionline.append(toks[toknum])
                               break
                           toknum += 1
-                      commandcontents.append(self.selfparse(functionline))
+                      commandcontents.append(this->selfparse(functionline))
 
                   
                       
@@ -1071,7 +1088,7 @@ class Parser:
                     
                 
                   if toks[toknum].type == TO_EOL:
-                    linetrue = True
+                    linetrue = true
                     toknum += 1
                     
                     
@@ -1083,56 +1100,56 @@ class Parser:
           toknum = i+2
           md = toks[toknum-1].value
 
-          name = self.selfparse(toks)
-          print(name)
+          name = this->selfparse(toks)
+          std::cout << name)
           commandlist.append(BUILTIN_FUNCTION("system",[md, name]))
       
         if toks[i].value == "memset":
-          # name =None
-          # md = None
-          # toknum = i+1
-          # while toks[toknum].type != TO_LBRACKET:
-          #   toknum +=1
-          # toknum +=1
-          # while toks[toknum].type != TO_RBRACKET:
+          // name =NULL
+          // md = NULL
+          // toknum = i+1
+          // while toks[toknum].type != TO_LBRACKET:
+          //   toknum +=1
+          // toknum +=1
+          // while toks[toknum].type != TO_RBRACKET:
             
-          #   md = toks[toknum]
+          //   md = toks[toknum]
 
-          #   toknum +=1
-          #   if toks[toknum].type ==TO_SPECIALCHARACTERS and toks[toknum].value == ",":
-          #     toknum +=1
-          #   name =  toks[toknum]
-          #   toknum +=1
-          #   if toks[toknum].type == TO_RBRACKET:
-          #     i -= 2
-          #     break
-            linetrue = False
+          //   toknum +=1
+          //   if toks[toknum].type ==TO_SPECIALCHARACTERS and toks[toknum].value == ",":
+          //     toknum +=1
+          //   name =  toks[toknum]
+          //   toknum +=1
+          //   if toks[toknum].type == TO_RBRACKET:
+          //     i -= 2
+          //     break
+            linetrue = false
             commandcontents = []
             toknum = i + 1
             varname = toks[toknum].value
-            commandcontents = self.parsevalues(toks,toknum)
+            commandcontents = this->parsevalues(toks,toknum)
 
             commandlist.append(
               BUILTIN_FUNCTION("memset", commandcontents)
             )
           
         if toks[i].value == "memread":
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           varname = toks[toknum].value
-          commandcontents = self.parsevalues(toks,toknum)
+          commandcontents = this->parsevalues(toks,toknum)
 
           commandlist.append(
             BUILTIN_FUNCTION("memread", commandcontents)
           )
         
         if toks[i].value == "loc":
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           varname = toks[toknum].value
-          commandcontents = self.parsevalues(toks,toknum)
+          commandcontents = this->parsevalues(toks,toknum)
 
           commandlist.append(
             BUILTIN_FUNCTION("loc", commandcontents)
@@ -1142,19 +1159,19 @@ class Parser:
             
         if toks[i].value == "function":
           argslist = []
-          linetrue = False
+          linetrue = false
           executelist = []
           toknum = i + 1
           name = toks[toknum]
           argslist = []
-          linetrue = False
-          getbracket = True
-          while getbracket == True:
+          linetrue = false
+          getbracket = true
+          while getbracket == true:
             
             if toks[toknum].type == TO_LBRACKET: 
               level = toks[toknum].level
               toknum += 1
-              while linetrue == False:
+              while linetrue == false:
                   
                     
                   if toks[toknum].type == TO_RT:
@@ -1165,29 +1182,29 @@ class Parser:
                     
                     
                     
-                    linetrue = True
+                    linetrue = true
                     
                     
                     
                     
                     
-                    getbracket = False
+                    getbracket = false
                     
                     
                     break
                   toks[toknum] = Token(TO_INTERNAL)
                   toknum += 1
             toknum += 1
-          getbracket = True
+          getbracket = true
           
-          linetrue = False
+          linetrue = false
           
-          while getbracket == True:
+          while getbracket == true:
             
             if toks[toknum].type == TO_LCBRACKET: 
               level = toks[toknum].level
               
-              while linetrue == False:
+              while linetrue == false:
                   
                     
                     
@@ -1198,13 +1215,13 @@ class Parser:
                     
                     
                     
-                    linetrue = True
+                    linetrue = true
                     
-                    executelist1 = self.selfparse(executelist)
+                    executelist1 = this->selfparse(executelist)
                     
                     
                     commandlist.append((BUILTIN_FUNCTION("function",[name,executelist1,argslist])))
-                    getbracket = False
+                    getbracket = false
                     
                     toknum = 0
                     break
@@ -1212,7 +1229,7 @@ class Parser:
                   toknum += 1
             toknum += 1
         if toks[i].value == "del":
-          linetrue = False
+          linetrue = false
           
           commandcontents = []
           toknum = i + 1
@@ -1220,18 +1237,18 @@ class Parser:
           level = toks[toknum].level
           
           
-          commandcontents = self.parsevalues(toks,toknum)
+          commandcontents = this->parsevalues(toks,toknum)
           
           commandlist.append(BUILTIN_FUNCTION("del",[varname,commandcontents,level]))   
         if toks[i].value == "var":
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           varname = toks[toknum].value
           level = toks[toknum].level
           toknum += 1
           
-          commandcontents = self.parsevalues(toks,toknum)
+          commandcontents = this->parsevalues(toks,toknum)
           
           commandlist.append(BUILTIN_FUNCTION("var",[varname,commandcontents,level]))
               
@@ -1239,14 +1256,14 @@ class Parser:
 
 
         if toks[i].value == "ptr":
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           commandcontents.append(toks[toknum])
           toknum += 1
                 
 
-          while linetrue == False:
+          while linetrue == false:
             
             if toks[toknum].type == TO_FUNCTION:
                 
@@ -1264,7 +1281,7 @@ class Parser:
                         functionline.append(toks[toknum])
                         break
                     toknum += 1
-                commandcontents.append(self.selfparse(functionline))
+                commandcontents.append(this->selfparse(functionline))
                 
             elif toks[toknum].type != TO_FUNCTION and toks[toknum].type != TO_EOL:
               if toks[toknum].type == TO_RT:
@@ -1276,7 +1293,7 @@ class Parser:
                 pass
               
             if toks[toknum].type == TO_EOL:
-              linetrue = True
+              linetrue = true
               toknum += 1
               
               commandlist.append(BUILTIN_FUNCTION("ptr",commandcontents))
@@ -1288,7 +1305,7 @@ class Parser:
 
         
         if toks[i].value == "savedVar":
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           varname = toks[toknum].value
@@ -1296,7 +1313,7 @@ class Parser:
                 
           
 
-          while linetrue == False:
+          while linetrue == false:
             
             if toks[toknum].type == TO_FUNCTION:
                 
@@ -1314,7 +1331,7 @@ class Parser:
                         functionline.append(toks[toknum])
                         break
                     toknum += 1
-                commandcontents.append(self.selfparse(functionline))
+                commandcontents.append(this->selfparse(functionline))
                 
             elif toks[toknum].type != TO_FUNCTION and toks[toknum].type != TO_EOL:
               if toks[toknum].type == TO_RT:
@@ -1328,7 +1345,7 @@ class Parser:
               
           
             if toks[toknum].type == TO_EOL:
-              linetrue = True
+              linetrue = true
               toknum += 1
               
               commandlist.append(BUILTIN_FUNCTION("savedVar",[varname,commandcontents]))
@@ -1339,7 +1356,7 @@ class Parser:
             toknum += 1
         
         if toks[i].value == "import":
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
 
@@ -1347,7 +1364,7 @@ class Parser:
           toknum += 1
           level = toks[toknum].level
           
-          while linetrue == False:
+          while linetrue == false:
             
             if toks[toknum].type == TO_FUNCTION:
                 
@@ -1365,7 +1382,7 @@ class Parser:
                         functionline.append(toks[toknum])
                         break
                     toknum += 1
-                commandcontents.append(self.selfparse(functionline))
+                commandcontents.append(this->selfparse(functionline))
                 
             elif toks[toknum].type != TO_FUNCTION and toks[toknum].type != TO_EOL:
               if toks[toknum].type == TO_RT:
@@ -1377,7 +1394,7 @@ class Parser:
                 pass
           
             if toks[toknum].type == TO_EOL:
-              linetrue = True
+              linetrue = true
               toknum += 1
               
               commandlist.append(BUILTIN_FUNCTION("import",[varname,commandcontents]))
@@ -1388,7 +1405,7 @@ class Parser:
             toknum += 1
 
         if toks[i].value == "extern":
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
 
@@ -1396,7 +1413,7 @@ class Parser:
           toknum += 1
           level = toks[toknum].level
           
-          while linetrue == False:
+          while linetrue == false:
             
             if toks[toknum].type == TO_FUNCTION:
                 
@@ -1414,7 +1431,7 @@ class Parser:
                         functionline.append(toks[toknum])
                         break
                     toknum += 1
-                commandcontents.append(self.selfparse(functionline))
+                commandcontents.append(this->selfparse(functionline))
                 
             elif toks[toknum].type != TO_FUNCTION and toks[toknum].type != TO_EOL:
               if toks[toknum].type == TO_RT:
@@ -1426,7 +1443,7 @@ class Parser:
                 pass
           
             if toks[toknum].type == TO_EOL:
-              linetrue = True
+              linetrue = true
               toknum += 1
               
               commandlist.append(BUILTIN_FUNCTION("extern",[varname,commandcontents]))
@@ -1440,51 +1457,51 @@ class Parser:
 
         if toks[i].value == "call":
           name = toks[i + 1].value
-          argslist = self.parsevalues(toks,i+2)
+          argslist = this->parsevalues(toks,i+2)
           
           commandlist.append(BUILTIN_FUNCTION("call",[name,argslist]))
           
         if toks[i].value == "savedVarDelete":
           
-          print("hello world!hi")
+          std::cout << "hello world!hi")
 
           lineToks = []
           toknum = i + 1
           
-          print(toknum)
+          std::cout << toknum)
 
           while toks[toknum].type != TO_EOL:
             lineToks.append(toks[toknum])
             toknum += 1
 
-          print(lineToks)
+          std::cout << lineToks)
           commandlist.append(BUILTIN_FUNCTION("savedVarDelete",[]))
             
           
 
         if toks[i].value == "while":
           conditionlist = []
-          linetrue = False
+          linetrue = false
           executelist = []
           toknum = i + 2
           if toks[toknum].type != TO_LBRACKET:
             level = toks[toknum].level
-            while linetrue == False:
+            while linetrue == false:
               if toks[toknum].type != TO_RBRACKET:            
                 conditionlist.append(toks[toknum])
                 toknum += 1
               if toks[toknum].type == TO_RBRACKET:
-                linetrue = True
+                linetrue = true
                 toknum+= 1
-            linetrue = False
-            linetrue = False
-            getbracket = True
-            while getbracket == True:
+            linetrue = false
+            linetrue = false
+            getbracket = true
+            while getbracket == true:
               
               if toks[toknum].type == TO_LCBRACKET: 
                 level = toks[toknum].level
                 
-                while linetrue == False:
+                while linetrue == false:
                     
                       
                       
@@ -1495,10 +1512,10 @@ class Parser:
                       
                       
                       
-                      linetrue = True
+                      linetrue = true
                       
                       
-                      getbracket = False
+                      getbracket = false
                       
                       toknum = 0
                       break
@@ -1514,8 +1531,8 @@ class Parser:
             r = conditionlist[2]
             
           except:
-            print("ERROR: NEED 3 values")
-          executelist = self.selfparse(executelist)
+            std::cout << "ERROR: NEED 3 values")
+          executelist = this->selfparse(executelist)
 
           commandlist.append(BUILTIN_FUNCTION("while",[
             [l,c,r],
@@ -1524,11 +1541,11 @@ class Parser:
 
         if toks[i].value == "openfile":
           
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           varname = toks[toknum].value
-          commandcontents = self.parsevalues(toks,toknum)
+          commandcontents = this->parsevalues(toks,toknum)
           
           
 
@@ -1537,11 +1554,11 @@ class Parser:
 
         if toks[i].value == "attach":
           
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 2
           varname = toks[toknum].value
-          num = None
+          num = NULL
 
 
           for x in toks[toknum:]:
@@ -1549,9 +1566,9 @@ class Parser:
               num = toks.index(x)
               break
 
-          if num == None: 
+          if num == NULL: 
             Error("Syntax", toks[toknum-2].li, fileControl.fileName, "Unmatched Bracket")
-          commandcontents = (self.parseargs(toks[toknum:num]))
+          commandcontents = (this->parseargs(toks[toknum:num]))
 
           
           
@@ -1559,22 +1576,22 @@ class Parser:
         
         if toks[i].value == "write":
           
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           varname = toks[toknum].value
-          commandcontents = self.parsevalues(toks,toknum)
+          commandcontents = this->parsevalues(toks,toknum)
           
           
           commandlist.append(BUILTIN_FUNCTION("write",[varname,commandcontents]))
 
         if toks[i].value == "size":
           
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           varname = toks[toknum].value
-          commandcontents = self.parsevalues(toks,toknum)
+          commandcontents = this->parsevalues(toks,toknum)
           
           
 
@@ -1582,11 +1599,11 @@ class Parser:
           commandlist.append(BUILTIN_FUNCTION("size",[varname,commandcontents]))
         if toks[i].value == "type":
           
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           varname = toks[toknum].value
-          commandcontents = self.parsevalues(toks,toknum)
+          commandcontents = this->parsevalues(toks,toknum)
           
           
 
@@ -1598,11 +1615,11 @@ class Parser:
           
       if toks[i].value == "appendto":
           
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           varname = toks[toknum].value
-          commandcontents = self.parsevalues(toks,toknum)
+          commandcontents = this->parsevalues(toks,toknum)
           
           
 
@@ -1610,18 +1627,18 @@ class Parser:
           commandlist.append(BUILTIN_FUNCTION("appendto",[varname,commandcontents]))
       if toks[i].value == "input":
           
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           varname = toks[toknum].value
-          commandcontents = self.parsevalues(toks,toknum) 
+          commandcontents = this->parsevalues(toks,toknum) 
           commandlist.append(BUILTIN_FUNCTION("input",[varname,commandcontents]))
               
               
       
       if toks[i].value == "return":
           
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           varname = toks[toknum].value
@@ -1629,7 +1646,7 @@ class Parser:
                 
           
 
-          while linetrue == False:
+          while linetrue == false:
             
             if toks[toknum].type == TO_FUNCTION:
                 
@@ -1647,7 +1664,7 @@ class Parser:
                         functionline.append(toks[toknum])
                         break
                     toknum += 1
-                commandcontents.append(self.selfparse(functionline))
+                commandcontents.append(this->selfparse(functionline))
                 
             elif toks[toknum].type != TO_FUNCTION and toks[toknum].type != TO_EOL:
               if toks[toknum].type == TO_RT:
@@ -1661,7 +1678,7 @@ class Parser:
               
           
             elif toks[toknum].type == TO_EOL:
-              linetrue = True
+              linetrue = true
               toknum += 1
               
               commandlist.append(BUILTIN_FUNCTION("return",[varname,commandcontents]))
@@ -1672,47 +1689,47 @@ class Parser:
             toknum += 1
 
       if toks[i].value == "new":
-        linetrue = False
+        linetrue = false
         commandcontents = []
         toknum = i + 1
         varname = toks[toknum].value
-        commandcontents = self.parsevalues(toks,toknum)
+        commandcontents = this->parsevalues(toks,toknum)
         commandlist.append(BUILTIN_FUNCTION("new",[varname,commandcontents]))
                                               
       if toks[i].value == "string":
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           varname = toks[toknum].value
-          commandcontents = self.parsevalues(toks,toknum)
+          commandcontents = this->parsevalues(toks,toknum)
           commandlist.append(BUILTIN_FUNCTION("string",[varname,commandcontents]))
               
               
       if toks[i].value == "int":
-          linetrue = False
+          linetrue = false
           commandcontents = []
           toknum = i + 1
           varname = toks[toknum].value
-          commandcontents = self.parsevalues(toks,toknum)
+          commandcontents = this->parsevalues(toks,toknum)
           commandlist.append(BUILTIN_FUNCTION("int",[varname,commandcontents]))
-      # if toks[i].value == "struct":
+      // if toks[i].value == "struct":
       
-      #   end = False
-      #   commandcontents = ""    
-      #   variablenames = []
+      //   end = false
+      //   commandcontents = ""    
+      //   variablenames = []
 
-      #   toknum += 1
-      #   structName = toks[toknum]
-      #   toknum += 1
+      //   toknum += 1
+      //   structName = toks[toknum]
+      //   toknum += 1
 
-      #   if toks[toknum] == TO_EQUALS:
-      #     toknum += 1
+      //   if toks[toknum] == TO_EQUALS:
+      //     toknum += 1
     
-      #   if toks[toknum] == TO_LBRACKET:
-      #     toknum += 1
+      //   if toks[toknum] == TO_LBRACKET:
+      //     toknum += 1
 
-      #   while end == False:
-      #     pass
+      //   while end == false:
+      //     pass
 
       if toks[i].type == "SPECIALCHARACTERS":
         if toks[i].value == "#":
@@ -1724,7 +1741,7 @@ class Parser:
     
     return commandlist
 
-'''INTERPRETER'''
+INTERPRETER
 class Interpreter:
   global variables,externalfunctions
   def __init__(self):
@@ -1735,13 +1752,13 @@ class Interpreter:
       for key,item in variableslist.items():
         variables[1][key] = item
     
-    return self.selfrun(executelist)
-  def selfrun(self,command_list, classAppend = None):
-      return self.run(command_list,1, classAppend)
+    return this->selfrun(executelist)
+  def selfrun(self,command_list, classAppend = NULL):
+      return this->run(command_list,1, classAppend)
   
   def getvar(self,name,level):
       global variables
-      returnvalue = None
+      returnvalue = NULL
       for i in range(1000):
         if len(variables[level+i + 1]) == 0:
               break
@@ -1756,7 +1773,7 @@ class Interpreter:
       return returnvalue
   
   def checkBooleanCondition(self,argslist):
-    print(argslist)
+    std::cout << argslist)
 
     for i in range(len(argslist)):
       if argslist[i].type == TO_COMPARATOR:
@@ -1766,50 +1783,50 @@ class Interpreter:
         COM_ = argslist[i]
 
         if LHS.type == TO_RT:
-          LHS = self.getvar(LHS.value, LHS.level)
-          print("LHS:", LHS)
-          if LHS == None:
+          LHS = this->getvar(LHS.value, LHS.level)
+          std::cout << "LHS:", LHS)
+          if LHS == NULL:
             Error("Name",LHS.line, fileControl.fileName, f"Variable {LHS.value} is not defined")
 
         if RHS.type == TO_RT:
-          RHS = self.getvar(RHS.value, RHS.level)
-          print("RHS:", RHS)
-          if RHS == None:
+          RHS = this->getvar(RHS.value, RHS.level)
+          std::cout << "RHS:", RHS)
+          if RHS == NULL:
             Error("Name",RHS.line, fileControl.fileName, f"Variable {RHS.value} is not defined")
 
         COM = COM_.value
         
         if COM == "==":
           if LHS.value == RHS.value:
-            return True
+            return true
           else:
-            return False
+            return false
         
         if COM == "===":
           if LHS.value == RHS.value and LHS.type == RHS.type:
-            return True
+            return true
           else:
-            return False
+            return false
         
         if COM == "!=":
           if LHS.value != RHS.value:
-            return True
+            return true
           else:
-            return False
+            return false
         
         if COM == "!==":
           if LHS.value != RHS.value and LHS.type != RHS.type:
-            return True
+            return true
           else:
-            return False
+            return false
 
         if COM == ">":
           if not ( LHS.type in [TO_INT, TO_FLOAT] and RHS.type in [TO_INT, TO_FLOAT]):
             Error("Comparator", COM_.line, fileControl.fileName, "Comparator > is not valid on types that are not INT or FLOAT")
           if LHS.value == RHS.value:
-            return True
+            return true
           else:
-            return False
+            return false
 
   def parsevalues(self,values):
     assignvalue = []
@@ -1818,21 +1835,21 @@ class Interpreter:
             
       value = values[o]
       
-      if isinstance(value,int) == False:
+      if isinstance(value,int) == false:
         
         if isinstance(value,list):
           
           if isinstance(value[0],BUILTIN_FUNCTION):
             
-              thing = self.selfrun([value[0]])
+              thing = this->selfrun([value[0]])
               assignvalue.append(thing)
               continue
-        else:
+        else {
           if value.type == TO_RT:
             
-            variable = self.getvar(value.value,value.level)
+            variable = this->getvar(value.value,value.level)
             
-            if variable == None:
+            if variable == NULL:
               Error("Undefined", value.line, fileControl.fileName, "variable referenced before assignment")
             assignvalue.append(variable)
             
@@ -1862,7 +1879,7 @@ class Interpreter:
 
 
   
-  def run(self,command_list1,mode, classAppend = None):
+  def run(self,command_list1,mode, classAppend = NULL):
     md = mode
     command_list = command_list1
     global fvariables,variables
@@ -1870,9 +1887,9 @@ class Interpreter:
     
     if DEBUG:
       for i in range(len(command_list)):
-        print(command_list[i].command,end = " ")
-        print(command_list[i].args,end = " ")
-        print()
+        std::cout << command_list[i].command,end = " ")
+        std::cout << command_list[i].args,end = " ")
+        std::cout << )
     for i in range(len(command_list)):
       current_command = command_list[i]
       
@@ -1880,7 +1897,7 @@ class Interpreter:
         
           variables,returner = runners[externalfunctions[current_command.command]].run(current_command,variables)
         
-          if returner != None and md == 1:
+          if returner != NULL and md == 1:
             return returner
       
       if current_command.command == "ACCESS_SPECIFIER":
@@ -1906,16 +1923,16 @@ class Interpreter:
               tempargslist.append([])
               argnum += 1
         for i in range(len(tempargslist)):
-            assign.append(self.parsevalues(tempargslist[i]))
+            assign.append(this->parsevalues(tempargslist[i]))
             assign[i] = assign[i][0]
         if md != 0:
           
           return Token(TO_LIST,assign,values[0].line)
         
       if current_command.command == 'input':
-        values = current_command.args[1]
+        values = current_command.args[1];
         
-        output = self.parsevalues(values)
+        output = this->parsevalues(values);
         
         returner = input(output[0].value)
         returner = Token(output[0].type,returner,output[0].level)
@@ -1925,7 +1942,7 @@ class Interpreter:
           return returner
       if current_command.command == 'int':
         values = current_command.args[1]
-        output = self.parsevalues(values)[0]
+        output = this->parsevalues(values)[0]
         output.type = TO_INT
         try:
           output.value = int(output.value)
@@ -1935,7 +1952,7 @@ class Interpreter:
           return output
       if current_command.command == 'string':
         values = current_command.args[1]
-        output = self.parsevalues(values)[0]
+        output = this->parsevalues(values)[0]
         output.value = str(output.value)
         output.type = TO_STRING
         if md == 1:
@@ -1958,7 +1975,7 @@ class Interpreter:
 
 
 
-        if classAppend != None:
+        if classAppend != NULL:
 
           
           classAppend.cl[classAppend.class_name].inherit_list[classAppend.cl[classAppend.class_name].mode][functionAssign.value] = declaredfunctions[functionTemplate.value]
@@ -1974,23 +1991,23 @@ class Interpreter:
       if current_command.command == 'write':
         values = current_command.args[1]
         
-        output = self.parsevalues(values)
+        output = this->parsevalues(values)
         
-        #DONT TOUCH YOU IDIOTS THIS IS FOR WRITE COMMAND.
-        print(output[0].value)
+        //DONT TOUCH YOU IDIOTS THIS IS FOR WRITE COMMAND.
+        std::cout << output[0].value)
 
       if current_command.command == 'openfile':
         values = current_command.args[1]
-        print(values)
-        output = self.parsevalues(values)
+        std::cout << values)
+        output = this->parsevalues(values)
 
         
         
-        print(output[0].value)
+        std::cout << output[0].value)
       if current_command.command == 'size':
         values = current_command.args[1]
         try:
-          output = self.parsevalues(values)
+          output = this->parsevalues(values)
         
           output = Token(TO_INT,len(output[0].value),output[0].line)
         except:
@@ -2022,18 +2039,23 @@ class Interpreter:
             assignlevel -= 1
         
         for arg in values:
-          if arg.type != TO_SPECIALCHARACTERS:
+          if (arg.type != TO_SPECIALCHARACTERS){
             output.append(arg)
-          else:
+          }
+          else { 
             if arg.value != ",":
               output.append(arg)
-        output = self.parsevalues(output)
-        if isinstance(variables[assignlevel][name.value].value,list) == False:
-          Error("Type", assignlevel, fileControl.fileName,"variable is not list")
-        try:
-          variables[assignlevel][name.value].value.append(output[0])
-        except:
-          Error("Undefined", assignlevel, fileControl.fileName,"variable is not defined")
+            }
+          }
+        output = this->parsevalues(output);
+        if (isinstance(variables[assignlevel][name.value].value,list) == false){
+          Error("Type", assignlevel, fileControl.fileName,"variable is not list");
+        try{
+          variables[assignlevel][name.value].value.append(output[0]);
+        }
+        catch(...){
+          Error("Undefined", assignlevel, fileControl.fileName,"variable is not defined");
+        }
 
         
       if current_command.command == 'get':
@@ -2048,7 +2070,7 @@ class Interpreter:
               del args[i]
         except:
           pass
-        args = self.parsevalues(args)[0]
+        args = this->parsevalues(args)[0]
         assignlevel = args.level
         level = args.level
         for o in range(level):
@@ -2076,8 +2098,8 @@ class Interpreter:
               if isinstance(tmp, Token):
                 returner = tmp
               elif isinstance(tmp,Functions):
-                #print("wir haben eine funktion")
-                returner = self.functionrun(tmp.executelist,[])
+                //std::cout << "wir haben eine funktion")
+                returner = this->functionrun(tmp.executelist,[])
             except:
               Error("Class", args.line, fileControl.fileName, "field does not exist, did you put the variable in public?")
           
@@ -2110,7 +2132,7 @@ class Interpreter:
         tempassign = []
         
         for i in range(len(args)):
-          print(args[i])
+          std::cout << args[i])
           if args[i].type != "RT" and args[i].value != ":":
             tempname.append(args[i])
             
@@ -2119,18 +2141,20 @@ class Interpreter:
             
             for o in range(len(args)-i):
               
-              print("2",args[o+i])
+              std::cout << "2",args[o+i])
               if args[o+i].type != TO_SPECIALCHARACTERS and args[o+i].value != ",":
                 tempassign.append(args[o+i])
                 
-              else:
+              else {
                 
-                #tempname=self.parsevalues(tempname)
+                //tempname=this->parsevalues(tempname)
                 
-                #tempassign = self.parsevalues(tempassign)
-                assign[tempname[0]] = Token(TO_DICT,tempassign,tempassign[0].level)
-        print("RETURNER",assign)
-        return assign
+                //tempassign = this->parsevalues(tempassign)
+
+                assign[tempname[0]] = Token(TO_DICT,tempassign,tempassign[0].level);
+              }
+        std::cout << "RETURNER" << assign;
+        return assign;
       if current_command.command == 'delindex':
         name = current_command.args[0]
         args = current_command.args[1].copy()
@@ -2141,7 +2165,7 @@ class Interpreter:
               del args[i]
         except:
           pass
-        args = self.parsevalues(args)[0]
+        args = this->parsevalues(args)[0]
         assignlevel = args.level
         level = args.level
         for o in range(level):
@@ -2174,7 +2198,7 @@ class Interpreter:
         
 
       if current_command.command == "for":
-        md = None
+        md = NULL
         condition = current_command.args[0]
         code = current_command.args[1]
         start = condition[0]
@@ -2192,15 +2216,15 @@ class Interpreter:
           md = "std"
 
         if DEBUG:
-          print(start, " ", stop, " ", increment)
+          std::cout << start, " ", stop, " ", increment)
 
         if md == "auto":
-          # print("AUTO")
+          // std::cout << "AUTO")
 
-          #start, stop , value
+          //start, stop , value
 
-          #auto   x     "hello world"
-          #auto   x     y
+          //auto   x     "hello world"
+          //auto   x     y
           if stop.type == TO_RT and increment.type == TO_RT:
             if stop.value == increment.value:
 
@@ -2220,7 +2244,7 @@ class Interpreter:
             
           for a in range(len(looper)):
             variables[assigner.strip()] = Token(TO_STRING,looper[a])
-            self.selfrun(code)
+            this->selfrun(code)
             
         if md == "std":
 
@@ -2228,35 +2252,35 @@ class Interpreter:
             c1 = start.value
           elif start.type == TO_RT:
             try:
-              c1 = self.getvar(start.value.strip(), start.level)
+              c1 = this->getvar(start.value.strip(), start.level)
               c1 = c1.value
             except: 
-              c1 = None
-              print("ERROR")
+              c1 = NULL
+              std::cout << "ERROR")
         
           if stop.type == TO_INT:
             c2 = stop.value
           elif stop.type == TO_RT:
             try:
-              c2 = self.getvar(stop.value.strip(), stop.level)
+              c2 = this->getvar(stop.value.strip(), stop.level)
               c2 = c2.value
             except: 
-              c2 = None
-              print("ERROR")
+              c2 = NULL
+              std::cout << "ERROR")
         
           if increment.type == TO_INT:
             c3 = increment.value
           elif increment.type == TO_RT:
             try:
-              c3 = self.getvar(increment.value.strip(), increment.level)
+              c3 = this->getvar(increment.value.strip(), increment.level)
               c3 = c3.value
             except: 
-              c3 = None
-              print("ERROR")
+              c3 = NULL
+              std::cout << "ERROR")
 
 
           for i in range(c1, c2, c3):
-            self.selfrun(code)
+            this->selfrun(code)
 
             value = start.value
 
@@ -2313,11 +2337,11 @@ class Interpreter:
         
         del variables[assignlevel][args.value]
       
-      if current_command.command == 'var':# interprit the raw token as variables and get the values. something to do tomoz. :) i want to die btw
+      if current_command.command == 'var':// interprit the raw token as variables and get the values. something to do tomoz. :) i want to die btw
 
-        values = current_command.args[1]
+        values = current_command.args[1];
         
-        assignvalue = self.parsevalues(values)
+        assignvalue = this->parsevalues(values)
         
         assignlevel = current_command.args[2]
         level = current_command.args[2]
@@ -2335,7 +2359,7 @@ class Interpreter:
           else:
             assignlevel -= 1
 
-        if classAppend != None:
+        if classAppend != NULL:
           classAppend.cl[classAppend.class_name].inherit_list[classAppend.mode][current_command.args[0]] = assignvalue[0]
           
           
@@ -2354,7 +2378,7 @@ class Interpreter:
         
         var_name = current_command.args[0]
 
-        print(var_name)
+        std::cout << var_name)
         if var_name == "__all__":
           saved_variables = {}
         else:
@@ -2365,7 +2389,7 @@ class Interpreter:
 
 
       if current_command.command == 'comment':
-        print('', end = '')
+        std::cout << '', end = '')
         
       
       if current_command.command == 'roar':
@@ -2378,7 +2402,7 @@ class Interpreter:
             
             output = output.replace("{}",str(variables.get(varnames[i])),1)
         output = output.upper()
-        print(output)
+        std::cout << output)
       
       if current_command.command == "random":
         args = current_command.args
@@ -2387,14 +2411,14 @@ class Interpreter:
           return Token(TO_INT,random.randint(int1,int2))
       if current_command.command == 'return':
         
-        values = self.parsevalues(current_command.args[1])
-        #values = current_command.args[1]
+        values = this->parsevalues(current_command.args[1])
+        //values = current_command.args[1]
         if md == 1:
           return values[0]
       
       if current_command.command == "type":
 
-        args = self.parsevalues(current_command.args[1])[0]
+        args = this->parsevalues(current_command.args[1])[0]
         args.value = args.type
         args.type = TO_STRING
         
@@ -2413,10 +2437,10 @@ class Interpreter:
         
         tempargslist = [[]]
         argnum = 0
-        print(argslist)
+        std::cout << argslist)
         for arg in argslist:
           if isinstance(arg,list):
-            tempargslist[argnum].append(self.selfrun(arg))
+            tempargslist[argnum].append(this->selfrun(arg))
             continue
           if arg.value != ",":
             tempargslist[argnum].append(arg)
@@ -2425,7 +2449,7 @@ class Interpreter:
               tempargslist.append([])
               argnum += 1
         argslist = tempargslist
-        print(tempargslist)
+        std::cout << tempargslist)
         funcvariables = {}
         if len(calledfunctionargs) > 0:
           if len(calledfunctionargs) != len(argslist):
@@ -2434,45 +2458,45 @@ class Interpreter:
           for i in range(len(argslist)):
             if argslist[i] == []:
               
-                Error("UserFunction", calledfunctionargs[0].line, fileControl.fileName, f"required arg {calledfunctionargs[i].value} is empty")
-            argslist[i] = self.parsevalues(argslist[i])
-            funcvariables[calledfunctionargs[i].value] = argslist[i][0]
+                Error("UserFunction", calledfunctionargs[0].line, fileControl.fileName, f"required arg {calledfunctionargs[i].value} is empty");
+            argslist[i] = this->parsevalues(argslist[i]);
+            funcvariables[calledfunctionargs[i].value] = argslist[i][0];
         
-        returner = self.functionrun(runner,funcvariables)
+        returner = this->functionrun(runner,funcvariables);
         
-        #argslist = self.parsevalues(argslist)
+        //argslist = this->parsevalues(argslist)
         
-        if returner != None:
-          return returner
+        if (returner != NULL){
+          return returner;
+        }
 
-      if current_command.command == "extern":
+      if (current_command.command == "extern"){
 
-        cmd = current_command.args[0]
-        args = current_command.args[1]
+        cmd = current_command.args[0];
+        args = current_command.args[1];
 
-        if not cmd.strip() in imported_functions:
-          Error("Import", "None", "None", "None" )
+        if (not cmd.strip() in imported_functions){
+          Error("Import", "NULL", "NULL", "NULL" );
 
         external_cmd = imported_functions[cmd]
         external_cmd(args)
+      }
+      if (current_command.command == "this"){
 
-      if current_command.command == "this":
 
-
-        if current_command.args[0].type == TO_SPECIALCHARACTERS and current_command.args[0].value == "->":
+        if (current_command.args[0].type == TO_SPECIALCHARACTERS and current_command.args[0].value == "->"){
 
           runner_list = current_command.args[1:]
 
 
-          self.selfrun(runner_list[0], classAppend = variables[current_command.args[0].level - 1]["__internal"])
-
-        
-
-      if current_command.command == "class":
+          this->selfrun(runner_list[0], classAppend = variables[current_command.args[0].level - 1]["__internal"])
+        }
+      }
+      if (current_command.command == "class"){
 
         variables[current_command.args[0].level]["__internal"].class_name = current_command.args[0].value
         
-        variables[current_command.args[0].level]["__internal"].isClass = True
+        variables[current_command.args[0].level]["__internal"].isClass = true
         
         uninitialized_classes[current_command.args[0].value] = current_command.args[0].level
 
@@ -2483,8 +2507,8 @@ class Interpreter:
         })
 
 
-        self.selfrun(current_command.args[2])
-
+        this->selfrun(current_command.args[2])
+      }
 
       if current_command.command == "new":
 
@@ -2515,7 +2539,7 @@ class Interpreter:
         for i in range(len(conditions)):
           if conditions[i].type == TO_RT:
               
-              conditions[i] = self.getvar(conditions[i].value,conditions[i].level)
+              conditions[i] = this->getvar(conditions[i].value,conditions[i].level)
               
         o = 0
         
@@ -2527,14 +2551,14 @@ class Interpreter:
             if conditions[o].value == "==":
               
               if conditions[o-1].value == conditions[o+1].value:
-                conditions[o] = True
+                conditions[o] = true
                 del conditions[o+1]
                 del conditions[o-1]
                 length -= 2
                 o -= 1
                 continue
               else:
-                  conditions[o] = False
+                  conditions[o] = false
                   del conditions[o+1]
                   del conditions[o-1]
                   length -= 2
@@ -2543,14 +2567,14 @@ class Interpreter:
             if conditions[o].value == "!=":
               
               if conditions[o-1].value != conditions[o+1].value:
-                conditions[o] = True
+                conditions[o] = true
                 del conditions[o+1]
                 del conditions[o-1]
                 length -= 2
                 o -= 1
                 continue
               else:
-                conditions[o] = False
+                conditions[o] = false
                 del conditions[o+1]
                 del conditions[o-1]
                 length -= 2
@@ -2558,9 +2582,9 @@ class Interpreter:
                 continue
           o += 1
         
-        if conditions[0] == True:
+        if conditions[0] == true:
           
-          self.selfrun(execute)
+          this->selfrun(execute)
         
       if current_command.command == "function":
         args = current_command.args
@@ -2568,7 +2592,7 @@ class Interpreter:
         execute = args[1]
         argslist = args[2]
 
-        if classAppend != None:
+        if classAppend != NULL:
           classAppend.cl[classAppend.class_name].inherit_list[classAppend.mode][name.value] = Functions(execute, argslist)
 
         else:
@@ -2577,7 +2601,7 @@ class Interpreter:
 
       if current_command.command == "loc":
 
-        var = self.getvar(current_command.args[0].value, current_command.args[0].level)
+        var = this->getvar(current_command.args[0].value, current_command.args[0].level)
 
         if md == 0:
           pass
@@ -2588,11 +2612,11 @@ class Interpreter:
       if current_command.command == "system":
         OSmode = current_command.args[0]
         if OSmode == 0:
-          #return an exit status
+          //return an exit status
           returner = Token(TO_INT,os.system(current_command.args[1]))
         
         if OSmode == 1:
-          #return the command output
+          //return the command output
           cmd = current_command.args[1]
           cmd = cmd.strip()
           cmd += " > out"
@@ -2626,23 +2650,28 @@ class Interpreter:
         if condition[0].type != TO_STRING and condition[0].value in variables:
           pass
 
-        while True:
-          res = self.checkBooleanCondition(condition)
-          print(res)
-          if res:
-            self.selfrun(code)
-          else:
-            break
-            
-      command_list = store_list
+        while (1){
+          res = this->checkBooleanCondition(condition);
+          std::cout << res;
+          if (res)
+            this->selfrun(code);
+          else
+            break;
+        }
+      command_list = store_list;
 
 
-'''END OF CLASSES AND COMMANDS'''
+// END OF CLASSES AND COMMANDS
 Settings = lambda f :  json.load(open(f))
 settings = Settings("settings.json")
 
 try: 
 
+  /*
+  for (int i = 0; i < 2000; i++){
+    variables[i] = {"__internal":Level_Handler()
+  }
+  */
   fileControl = fileInput()
 
   saved_handler = JSON_saver()
@@ -2671,7 +2700,7 @@ try:
       text[i] = removeLast(text[i])
 
 
-  print() #newline before we start.
+  std::cout << ) //newline before we start.
   line = 0
   tokens = []
   for i in range(len(text)):
@@ -2694,31 +2723,32 @@ try:
   interpreter.run(commands,0)
 
   if DEBUG:
-    print(variables)
-    print(declaredfunctions)
+    std::cout << variables)
+    std::cout << declaredfunctions)
     """DEBUG INFORMATION"""
 
     for i in range(len(commands)):
-      print(commands[i].command,end = " ")
-      print(commands[i].args,end = " ")
-      print()
+      std::cout << commands[i].command,end = " ")
+      std::cout << commands[i].args,end = " ")
+      std::cout << )
   saved_handler.writeDict(saved_variables)
   input("\nPress enter or return to close the application...")
 
 except Exception as e:
-  print(fsefhkjshkfjs)
+  std::cout << fsefhkjshkfjs)
   today = date.today()
   f = open("log.txt","a")
 
   exc_type, exc_obj, exc_tb = sys.exc_info()
   fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-  #'print(exc_type, fname, exc_tb.tb_lineno)
+  //'std::cout << exc_type, fname, exc_tb.tb_lineno)
   
-  print('Uncaught Error! Code: {c}, Message: {m}'.format(c = type(e).__name__, m = str(e)))
+  std::cout << 'Uncaught Error! Code: << type(e)._name__ << "Message: " << str(e);
   
-  if settings["autoDumpError"] == False:
-    dump = input("Dump Error to log.txt? y/n: ")
-  else:
+  if (settings["autoDumpError"] == false){
+    dump = input("Dump Error to log.txt? y/n: ");
+  }
+  else
     dump = "y"
 
   if dump.lower() == "y":
@@ -2726,14 +2756,14 @@ except Exception as e:
     f.write(' Code: {c}, Message: {m}'.format(c = type(e).__name__, m = str(e)) + "\n")
 
 
-    #f.write(f'Error Type: {type(e).__name__,}, Message: {str(e)} When attempting to run file: {fileHandler.fileName}')
+    //f.write(f'Error Type: {type(e).__name__,}, Message: {str(e)} When attempting to run file: {fileHandler.fileName}')
 
   else:
     pass
   f.close()
     
     
-# we used some memory, so let's give it back
+// we used some memory, so let's give it back
 
 globals__ = globals()
 keys = list(globals__.keys())
