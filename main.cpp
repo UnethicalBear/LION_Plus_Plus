@@ -1,8 +1,8 @@
 // import sys
 // import os
 // import json
-// import random 
-// import pickle 
+// import random
+// import pickle
 // import importlib
 // from datetime import date as date
 
@@ -13,7 +13,6 @@
 #include <map>
 #include <vector>
 
-
 /*void LION_BDAY_MESSAGE():
   today = date.today()
   if today.day == 27 and today.month == 11:
@@ -22,10 +21,10 @@
 
     if years_old[-1] == "1":
       std::cout << f"Happy {years_old}st Birthday, LION! ")
-    
+
     elif years_old[-1] == "2":
       std::cout << f"Happy {years_old}nd Birthday, LION! ")
-    
+
     elif years_old[-1] == "3":
       std::cout << f"Happy {years_old}rd Birthday, LION! ")
 
@@ -51,19 +50,17 @@ LION_BDAY_MESSAGE()
 //     temp = importlib.import_module('.'+tempfunctions[i].strip(".py"), 'INTERNAL.Functions')
 //     commandimport = temp.command_list
 //     for thing in commandimport:
-//       externalfunctions[thing] = tempfunctions[i].strip(".py") 
-      
-//     runners[tempfunctions[i].strip(".py")] = temp
+//       externalfunctions[thing] = tempfunctions[i].strip(".py")
 
+//     runners[tempfunctions[i].strip(".py")] = temp
 
 // if (DEBUG:
 //   std::cout << externalfunctions)
 
-std::map<std::string,std::string> variables;
-std::map<std::string,std::string> fVariables;
-std::map<std::string,std::string> declaredFunctions;
-std::map<std::string,std::string> importedFunctions;
-
+std::map<std::string, std::string> variables;
+std::map<std::string, std::string> fVariables;
+std::map<std::string, std::string> declaredFunctions;
+std::map<std::string, std::string> importedFunctions;
 
 // arrays = pointers     = {}
 // parts                 = {}
@@ -72,202 +69,218 @@ std::map<std::string,std::string> importedFunctions;
 // variables             = {}
 // saved_variables       = {}
 
-
-
-std::vector<std::string> characters  = {"+","=","#"," ","/","*","-", "%",",", "->"};
-std::vector<char> numchars           = {'0','1','2','3','4','5','6','7','8','9','.'};
-std::vector<std::string> comparators = {"==","!=","<=",">=","<",">","and","or","not"};
-std::vector<std::string> functions   = {"write","if","var","roar","input","int","string","delindex", "savedVar", "while","random","function", "savedVarDelete", "for", "system", "ptr","array","call","return", "memset", "extern", "import", "error","get","appendto","type","size","openfile", "class", "this", "new","del", "loc", "memread", "attach","dict"};
-std::vector<std::string> keywords    = {"//", "auto", "private", "public","inherit", "/*", "*/"};
-std::vector<std::string> bValues    = {"true", "false", "REEEEEEEEEEEEEE"};
-
+std::vector<std::string> characters = {"+", "=", "#", " ", "/", "*", "-", "%", ",", "->"};
+std::vector<char> numchars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'};
+std::vector<std::string> comparators = {"==", "!=", "<=", ">=", "<", ">", "and", "or", "not"};
+std::vector<std::string> functions = {"write", "if", "var", "roar", "input", "int", "string", "delindex", "savedVar", "while", "random", "function", "savedVarDelete", "for", "system", "ptr", "array", "call", "return", "memset", "extern", "import", "error", "get", "appendto", "type", "size", "openfile", "class", "this", "new", "del", "loc", "memread", "attach", "dict"};
+std::vector<std::string> keywords = {"//", "auto", "private", "public", "inherit", "/*", "*/"};
+std::vector<std::string> bValues = {"true", "false", "REEEEEEEEEEEEEE"};
 
 // CLASSES FOR SAVED VARIABLES
 
-class JSON_saver {          // this class needs to be able to read a binary and convert it to JSON and vice versa.
+class JSON_saver
+{ // this class needs to be able to read a binary and convert it to JSON and vice versa.
 
 private:
-    std::string file;
+  std::string file;
 
 public:
-  JSON_saver(){
-  
+  JSON_saver()
+  {
   }
-  void read(std::string file){
+  void read(std::string file)
+  {
     this->file = file;
     // return pickle.load(open(this->file_, "rb"))
-    }
-  
-  void writeDict(std::map<std::string,std::string> dictionary){
+  }
+
+  void writeDict(std::map<std::string, std::string> dictionary)
+  {
 
     // saved_json = pickle.dumps(dictionary)
     // f = open(this->file_, "wb")
     // f.write(saved_json)
     // f.close()
-    
-    }
-
+  }
 };
-
-
 
 // TOKEN TYPES
 
-#define TO_RT  'RT' 
-#define TO_DICT  'DICT'
-#define TO_STRING  'STRING'
-#define TO_INT  'INT'
-#define TO_FLOAT  'FLOAT'
-#define TO_RBRACKET  'RBRACKET'
-#define TO_COMPARATOR  'COMPARATOR'
-#define TO_LBRACKET  'LBRACKET'
-#define TO_FUNCTION  'BUILTIN_FUNCTION'
-#define TO_EXTERNALFUNCTION  'EXTERNAL_FUNCTION'
-#define TO_KEYWORD  'KEYWORD'
-#define TO_SPECIALCHARACTERS  'SPECIALCHARACTERS'
-#define TO_EOL  'EOL'
-#define TO_COMMENT  'COMMENT'
-#define TO_INTERNAL  'INTERNALFUNCTION'
-#define TO_MULTIPLY  'MULTIPLY'
-#define TO_DIVIDE  'DIVIDE'
-#define TO_PLUS  'PLUS'
-#define TO_LIST  'LIST'
-#define TO_MINUS  'MINUS'
-#define TO_OPERATIONS  'OPERATORS'
-#define TO_EQUALS  'EQUALS'
-#define TO_RCBRACKET  "RCBRACKET" 
-#define TO_LCBRACKET  "LCBRACKET"
-#define TO_RSBRACKET  "RSBRACKET" 
-#define TO_LSBRACKET  "LSBRACKET"
-#define TO_FUNCTION_DEF  "FUNCTION"
-#define TO_ERROR  'ERROR'
-#define TO_NULL  'NULL'
-#define TO_CALL_EXTERNAL  'EXTERNALCOMMAND'
-#define TO_CLASS  'CLASS'
-#define TO_BOOL  'BOOLEANVALUE'
+#define TO_RT "RT"
+#define TO_DICT "DICT"
+#define TO_STRING "STRING"
+#define TO_INT "INT"
+#define TO_FLOAT "FLOAT"
+#define TO_RBRACKET "RBRACKET"
+#define TO_COMPARATOR "COMPARATOR"
+#define TO_LBRACKET "LBRACKET"
+#define TO_FUNCTION "BUILTIN_FUNCTION"
+#define TO_EXTERNALFUNCTION "EXTERNAL_FUNCTION"
+#define TO_KEYWORD "KEYWORD"
+#define TO_SPECIALCHARACTERS "SPECIALCHARACTERS"
+#define TO_EOL "EOL"
+#define TO_COMMENT "COMMENT"
+#define TO_INTERNAL "INTERNALFUNCTION"
+#define TO_MULTIPLY "MULTIPLY"
+#define TO_DIVIDE "DIVIDE"
+#define TO_PLUS "PLUS"
+#define TO_LIST "LIST"
+#define TO_MINUS "MINUS"
+#define TO_OPERATIONS "OPERATORS"
+#define TO_EQUALS "EQUALS"
+#define TO_RCBRACKET "RCBRACKET"
+#define TO_LCBRACKET "LCBRACKET"
+#define TO_RSBRACKET "RSBRACKET"
+#define TO_LSBRACKET "LSBRACKET"
+#define TO_FUNCTION_DEF "FUNCTION"
+#define TO_ERROR "ERROR"
+#define TO_NULL "NULL"
+#define TO_CALL_EXTERNAL "EXTERNALCOMMAND"
+#define TO_CLASS "CLASS"
+#define TO_BOOL "BOOLEANVALUE"
 
-
-
-class Classes {
+class Classes
+{
 public:
-    std::string inheritList;
-    std::string mode;
-    Classes(std::string inheritList){
-        this->inheritList = inheritList;
-        this->mode = "private";
-    }
-
+  std::string inheritList;
+  std::string mode;
+  Classes(std::string inheritList)
+  {
+    this->inheritList = inheritList;
+    this->mode = "private";
+  }
 };
-    
-class Functions {
+
+class Functions
+{
 public:
-    std::vector<std::string> argslist;
-    std::vector<std::string> executelist;
-    Functions(std::vector<std::string>executelist,std::vector<std::string>argslist){
-        this->argslist = argslist;
-        this->executelist = executelist;
-    }   
-    ~Functions(){
-        this->argslist.clear();
-        this->executelist.clear();
-    } 
+  std::vector<std::string> argslist;
+  std::vector<std::string> executelist;
+  Functions(std::vector<std::string> executelist, std::vector<std::string> argslist)
+  {
+    this->argslist = argslist;
+    this->executelist = executelist;
+  }
+  ~Functions()
+  {
+    this->argslist.clear();
+    this->executelist.clear();
+  }
 };
 
 // VARIABLE SCOPES
 
-class Level_Handler {
+class Level_Handler
+{
 public:
   bool isClass = false;
   std::string class_name;
   std::string mode = "private";
   std::any cl;
-    
-  Level_Handler(std::string className){
-    this->class_name=className;
-  }
 
+  Level_Handler(std::string className)
+  {
+    this->class_name = className;
+  }
 };
 
-    
-bool canBeInteger(float value){
+bool canBeInteger(float value)
+{
   bool isInt = false;
-  try {
+  try
+  {
     int value1 = int(value);
     return value1 == value;
   }
-  catch(...){
+  catch (...)
+  {
     return false;
   }
 }
 // ERROR CLASS
-class Error{
+class Error
+{
 public:
-  Error(std::string type_,std::string line, std::string file_, std::string details){
-    std::cout << type_ << "Error: [File " << file_ << " Line " << line << details << std::endl << "\nPress enter or return to close the application...";
+  Error(std::string type_, std::string line, std::string file_, std::string details)
+  {
+    std::cout << type_ << "Error: [File " << file_ << " Line " << line << details << std::endl
+              << "\nPress enter or return to close the application...";
     std::cin;
     exit(-1);
   }
-}
+};
 
 // TOKEN CLASS THAT LEXER RETURNS
-class Token{
+class Token
+{
 public:
-
   std::string type;
   std::string value;
   int level;
   std::string line;
 
-  Token(std::string type, std::string value=NULL,int level=NULL, std::string line = "unknown"){
+  Token(std::string type, std::string value = NULL, int level = NULL, std::string line = "unknown")
+  {
     this->type = type;
     this->value = value;
     this->level = level;
     this->line = line;
   }
-  operator std::string () const {
+  operator std::string() const
+  {
     return this->type + " : " + this->value + " on line " + this->line;
   }
 };
 
-
 // MATHS CLASS
-class mathsClass {
+class mathsClass
+{
 
 public:
   std::vector<Token> argslist;
   int level;
   std::vector<std::string> bracketnums;
 
-  mathsClass(){
+  mathsClass()
+  {
   }
-  ~mathsClass(){
+  ~mathsClass()
+  {
     this->argslist.clear();
   }
-  //  selfparse(self,args):
-    // return this->parse(args)
-  std::vector<Token> parse(std::vector<Token> args){
+  std::vector<Token> selfparse(std::vector<Token> args)
+  {
+    return this->parse(args);
+  }
+  std::vector<Token> parse(std::vector<Token> args)
+  {
     this->argslist = args;
-    try {
-      for (int i = 0; i != this->argslist.size(); i++){
-        if (argslist[i].type()=="" || argslist[-1].type == TO_INTERNAL){
-          argslist.erase(argslist.begin()+i);
+    try
+    {
+      for (int i = 0; i != this->argslist.size(); i++)
+      {
+        if (argslist[i].type() == "" || argslist[-1].type == TO_INTERNAL)
+        {
+          argslist.erase(argslist.begin() + i);
         }
       }
     }
-    catch(...){}
+    catch (...)
+    {
+    }
 
     int length = argslist.size();
     int i = 0;
     try {
-      for (int r = 0; r != argslist.size(); r++){
+      for (int r = 0; r != argslist.size(); r++) {
         if (argslist[r].type == TO_LBRACKET){
           level = argslist[r].level;
           bracketnums = {};
           int first = r;
           int last = 0;
           int count = r + 1;
-          while(true){
-            if (argslist[count].type != TO_RBRACKET){
+          while (true) {
+            if (argslist[count].type != TO_RBRACKET) {
               bracketnums.push_back(argslist[count]);
               count += 1;
             }
@@ -275,88 +288,64 @@ public:
               if (argslist[count].level == level){
                 last = count;
                 std::vector<Token> value = this->selfparse(bracketnums);
-                del argslist[first:last];
+                it = first;
+                while(it != last) {
+                  it = argslist.erase(it);
+                  it++;
+                }
                 argslist[first] = value[0];
-                
                 break;
               }
             }
           }
-    catch(...){
-      pass;
+        }
+      }
     }
-    state = 0
-    i = 0
-    while true:
-      try:
-        
-        if argslist[i].type=="INTERNALFUNCTION":
-          del argslist[i]
-          length -= 1
-          i -= 1
-        
-        if argslist[i].type == "SPECIALCHARACTERS":
-          if argslist[i].value == "=":
-            del argslist[i]
-            length -= 1
+    catch (...) {}
+    int state = 0;
+    int i = 0;
+    while (true){
+      try{
+        if (argslist[i].type == "INTERNALFUNCTION"){
+          del argslist[i];
+          int length -= 1;
+          i -= 1.
+        }
+        if argslist[i].type == "SPECIALCHARACTERS"{
+          if argslist[i].value == "="){
+            del argslist[i] length -= 1 
             i -= 1
-          if state == 0:
-            
-            if argslist[i].value == "*":
-              result = argslist[i-1].value * argslist[i+1].value
-              argslist[i] = Token(argslist[i-1].type,result,argslist[i-1].level)
-              del argslist[i+1]
-              del argslist[i-1]
-              length -= 2
-              i -= 1
-              
-            elif argslist[i].value == "/":
-              result = argslist[i-1].value / argslist[i+1].value
-              argslist[i] = Token(argslist[i-1].type,result,argslist[i-1].level)
-              del argslist[i+1]
-              del argslist[i-1]
-              length -= 2
-              i -= 1
-          if state == 1:
-            
-            
-            if argslist[i].value == "-":
-              result = argslist[i-1].value - argslist[i+1].value
-              argslist[i] = Token(argslist[i-1].type,result,argslist[i-1].level)
-              del argslist[i+1]
-              del argslist[i-1]
-              length -= 2
-              i -= 1
-            
-            elif argslist[i].value == "+":
-              result = argslist[i-1].value + argslist[i+1].value
-              argslist[i] = Token(argslist[i-1].type,result,argslist[i-1].level)
-              del argslist[i+1]
-              del argslist[i-1]
-              length -= 2
-              i -= 1
-            
-        i += 1
-        continue
-      except IndexError:
-        if state == 0:
-          state = 1
-          i = 0
-        elif state == 1:
-          break
-      except TypeError:
-        Error("Type", argslist[i].line, fileControl.fileName, "invalid comparotor")
-    return argslist
-                    
-    
-class Struct:
-  def __init__(self,keys,values,):
-    this->keys = keys
-    this->values = values
-    this->struct = this->makeStruct()
-  
-  def makeStruct(self):
-    res = {}
+          }
+          if state == 0 :
+            if argslist[i].value == "*" : 
+              result = int(argslist[i - 1].value) * int(argslist[i + 1].value);
+              argslist[i] = Token(argslist[i - 1].type, result, argslist[i - 1].level)
+                                                   del argslist[i + 1] del argslist[i - 1] length -= 2 i -= 1
+
+                                                                                                            elif argslist[i]
+                                                                                                                .value == "/" : result = argslist[i - 1].value / argslist[i + 1].value
+                                                                                                                                                                     argslist[i] = Token(argslist[i - 1].type, result, argslist[i - 1].level)
+                                                                                                                                             del argslist[i + 1] del argslist[i - 1] length -= 2 i -= 1 if state == 1 :
+
+                  if argslist[i]
+                      .value == "-" : result = argslist[i - 1].value - argslist[i + 1].value
+                                                                           argslist[i] = Token(argslist[i - 1].type, result, argslist[i - 1].level)
+                                                   del argslist[i + 1] del argslist[i - 1] length -= 2 i -= 1
+
+                                                                                                            elif argslist[i]
+                                                                                                                .value == "+" : result = argslist[i - 1].value + argslist[i + 1].value
+                                                                                                                                                                     argslist[i] = Token(argslist[i - 1].type, result, argslist[i - 1].level)
+                                                                                                                                             del argslist[i + 1] del argslist[i - 1] length -= 2 i -= 1
+
+                  i += 1 continue except IndexError : if state == 0 : state = 1 i = 0 elif state == 1 : break except TypeError : Error("Type", argslist[i].line, fileControl.fileName, "invalid comparotor") return argslist
+
+                                                                                                                                 class Struct : def
+                                                                                                                                                __init__(self, keys, values, ) : this->keys = keys this->values = values this->struct
+                  = this->makeStruct()
+
+                        def
+                        makeStruct(self) : res =
+              {}
 
     if not len(this->keys) == len(this->values): return-1
     for i in range(len(this->keys)):
@@ -373,7 +362,7 @@ class BUILTIN_FUNCTION:
 
 class COMMENT:
   def __init__(self,command,args):
-    this->command = 'comment'
+    this->command = "comment"
     this->args = NULL
 
 
@@ -386,7 +375,7 @@ class fileInput:
     try:
       fileName = sys.argv[1]
     except:
-      fileName = input('No file was found to be run. Please input one now: ')
+      fileName = input("No file was found to be run. Please input one now: ")
 
       if (not os.path.exists(fileName)):
         std::cout << )
@@ -408,7 +397,7 @@ class fileInput:
     if not os.path.exists(fileName):
       return -1
     else:
-      file_ = open(fileName, 'rt')
+      file_ = open(fileName, "rt")
       contents = file_.read()
       contents = str(contents).replace(r'\a\b\f\n\t','\a\b\f\n\t')
     
@@ -458,10 +447,11 @@ class Anyasis:
         sbracketnum -= 1
         continue;
 
-      if (text[i] == "{" && isString == false && isNum == false){
-        cbracketnum += 1;
+          if (text[i] == "{" && isString == false && isNum == false)
+          {
+            cbracketnum += 1;
 
-        if current_text_list.strip() != "":
+            if current_text_list.strip() != "":
           command_parts.append(Token(TO_RT, current_text_list,cbracketnum))
           current_text_list = ""
         
@@ -556,8 +546,9 @@ class Lexer:
         tok_list[i].value = tok_list[i].value.replace(" ","")
         tok_list[i].line = this->li
       this->current_tok = tok_list[i]
-      if (this->current_tok.type == TO_STRING){
-        this->current_tok.value = this->current_tok.value.replace("{}","");
+      if (this->current_tok.type == TO_STRING)
+              {
+                this->current_tok.value = this->current_tok.value.replace("{}", "");
         this->current_tok.li = this->li
         this->current_tok.line = this->li
       if this->current_tok.type != TO_STRING:
@@ -1844,7 +1835,8 @@ class Interpreter:
               thing = this->selfrun([value[0]])
               assignvalue.append(thing)
               continue
-        else {
+        else
+        {
           if value.type == TO_RT:
             
             variable = this->getvar(value.value,value.level)
@@ -1931,21 +1923,12 @@ class Interpreter:
         
       if current_command.command == 'input':
         values = current_command.args[1];
-        
-        output = this->parsevalues(values);
-        
-        returner = input(output[0].value)
-        returner = Token(output[0].type,returner,output[0].level)
-        if md == 0:
-          pass
-        else:
-          return returner
-      if current_command.command == 'int':
-        values = current_command.args[1]
-        output = this->parsevalues(values)[0]
-        output.type = TO_INT
-        try:
-          output.value = int(output.value)
+
+          output = this->parsevalues(values);
+
+          returner = input(output[0].value)
+              returner = Token(output[0].type, returner, output[0].level) if md == 0 : pass else : return returner if current_command.command == 'int' : values = current_command.args[1] output = this->parsevalues(values)[0] output.type = TO_INT
+          try : output.value = int(output.value)
         except:
           Error("Type", output.line, fileControl.fileName, "number of args for function does not match required number")
         if md == 1:
@@ -2006,8 +1989,7 @@ class Interpreter:
         std::cout << output[0].value)
       if current_command.command == 'size':
         values = current_command.args[1]
-        try:
-          output = this->parsevalues(values)
+            try : output = this->parsevalues(values)
         
           output = Token(TO_INT,len(output[0].value),output[0].line)
         except:
@@ -2039,32 +2021,37 @@ class Interpreter:
             assignlevel -= 1
         
         for arg in values:
-          if (arg.type != TO_SPECIALCHARACTERS){
-            output.append(arg)
+          if (arg.type != TO_SPECIALCHARACTERS)
+              {
+                output.append(arg)
+              }
+          else
+          {
+            if arg
+              .value != "," : output.append(arg)
           }
-          else { 
-            if arg.value != ",":
-              output.append(arg)
-            }
-          }
+        }
         output = this->parsevalues(output);
-        if (isinstance(variables[assignlevel][name.value].value,list) == false){
-          Error("Type", assignlevel, fileControl.fileName,"variable is not list");
-        try{
-          variables[assignlevel][name.value].value.append(output[0]);
-        }
-        catch(...){
-          Error("Undefined", assignlevel, fileControl.fileName,"variable is not defined");
-        }
+        if (isinstance(variables[assignlevel][name.value].value, list) == false)
+        {
+          Error("Type", assignlevel, fileControl.fileName, "variable is not list");
+          try
+          {
+            variables[assignlevel][name.value].value.append(output[0]);
+          }
+          catch (...)
+          {
+            Error("Undefined", assignlevel, fileControl.fileName, "variable is not defined");
+          }
 
-        
-      if current_command.command == 'get':
-        
-        name = current_command.args[0]
-        
-        args = current_command.args[1].copy()
-        
-        try:
+          if current_command
+            .command == 'get' :
+
+                name = current_command.args[0]
+
+                       args = current_command.args[1].copy()
+
+            try:
           for i in range(len(args)):
             if args[i].type == TO_LSBRACKET or args[i].type == TO_RSBRACKET:
               del args[i]
@@ -2089,77 +2076,67 @@ class Interpreter:
             assignlevel -= 1
         if args.type == TO_RSBRACKET:
           Error("Syntax", assignlevel, fileControl.fileName, "no index given")
-        
-        try:
 
-          if name in classes:
             try:
-              tmp = classes[name].inherit_list["public"][args.value]
-              if isinstance(tmp, Token):
-                returner = tmp
-              elif isinstance(tmp,Functions):
-                //std::cout << "wir haben eine funktion")
-                returner = this->functionrun(tmp.executelist,[])
-            except:
-              Error("Class", args.line, fileControl.fileName, "field does not exist, did you put the variable in public?")
-          
-          elif args.value in globals()["saved_variables"]:
+
+              if name
+                in classes:
+                try : tmp
+                  = classes[name].inherit_list["public"][args.value] if isinstance (tmp, Token) : returner = tmp
+                      elif
+                      isinstance(tmp, Functions) : // std::cout << "wir haben eine funktion")
+                                                   returner = this->functionrun(tmp.executelist, [])
+                                                                  except : Error("Class", args.line, fileControl.fileName, "field does not exist, did you put the variable in public?")
+
+                                                                               elif args.value in
+                                                                               globals()["saved_variables"]:
+                  try : returner
+                    = globals()["saved_variables"][args.value] except : Error("Name", args.line, fileControl.fileName, "saved variable does not exist.")
+
+                                                                            else:
+                    try : returner
+                      = variables[assignlevel][name].value[args.value] except : Error("Name", args.line, fileControl.fileName, "variable is not defined")
+
+                                                                                    except IndexError : Error("Index", args.line, fileControl.fileName, "list index out of range")
+                                                                                                            except KeyError : Error("Key", args.line, fileControl.fileName, "unknown invalid key")
+
+                                                                                                                                  if md == 1 : return returner if current_command.command == 'dict' : name = current_command.command
+                                                                                                                                                                                                                 args = current_command.args[0].copy()
+                                                                                                                                                                                                                            assign = {} tempname = [] tempassign = []
+
+                          for i in range(len(args)) :
+                          std::cout << args[i]) if args[i]
+                          .type != "RT" and
+                          args[i]
+                          .value != ":" :
+                          tempname.append(args[i])
+
+                              else :
+
+                          for o in range(len(args) - i) :
+
+                          std::cout
+                          << "2", args[o + i]) if args[o + i]
+                          .type != TO_SPECIALCHARACTERS and
+                          args[o + i]
+                          .value != "," :
+                          tempassign.append(args[o + i])
+
+                              else
+                      {
+
+                        // tempname=this->parsevalues(tempname)
+
+                        // tempassign = this->parsevalues(tempassign)
+
+                        assign[tempname[0]] = Token(TO_DICT, tempassign, tempassign[0].level);
+                      }
+          std::cout << "RETURNER" << assign;
+          return assign;
+          if current_command
+            .command == 'delindex' : name = current_command.args[0] args = current_command.args[1].copy()
+
             try:
-              returner = globals()["saved_variables"][args.value]
-            except:
-              Error("Name", args.line, fileControl.fileName, "saved variable does not exist.")
-          
-          else:
-            try:
-              returner = variables[assignlevel][name].value[args.value]
-            except:
-              Error("Name", args.line, fileControl.fileName, "variable is not defined")
-
-        except IndexError:
-          Error("Index", args.line, fileControl.fileName, "list index out of range")
-        except KeyError:
-          Error("Key", args.line, fileControl.fileName, "unknown invalid key")
-        
-              
-
-        if md == 1:
-          return returner
-      if current_command.command == 'dict':
-        name = current_command.command
-        args = current_command.args[0].copy()
-        assign = {}
-        tempname = []
-        tempassign = []
-        
-        for i in range(len(args)):
-          std::cout << args[i])
-          if args[i].type != "RT" and args[i].value != ":":
-            tempname.append(args[i])
-            
-            
-          else:
-            
-            for o in range(len(args)-i):
-              
-              std::cout << "2",args[o+i])
-              if args[o+i].type != TO_SPECIALCHARACTERS and args[o+i].value != ",":
-                tempassign.append(args[o+i])
-                
-              else {
-                
-                //tempname=this->parsevalues(tempname)
-                
-                //tempassign = this->parsevalues(tempassign)
-
-                assign[tempname[0]] = Token(TO_DICT,tempassign,tempassign[0].level);
-              }
-        std::cout << "RETURNER" << assign;
-        return assign;
-      if current_command.command == 'delindex':
-        name = current_command.args[0]
-        args = current_command.args[1].copy()
-        
-        try:
           for i in range(len(args)):
             if args[i].type == TO_LSBRACKET or args[i].type == TO_RSBRACKET:
               del args[i]
@@ -2183,9 +2160,8 @@ class Interpreter:
             assignlevel -= 1
         if args.type == TO_RSBRACKET:
           Error("Syntax", assignlevel, fileControl.fileName, "no index given")
-        
-        try:
-          dellist = variables[assignlevel][name].value
+
+            try : dellist = variables[assignlevel][name].value
           
           del dellist[args.value]
           variables[assignlevel][name].value[args.value] = dellist
@@ -2251,8 +2227,7 @@ class Interpreter:
           if start.type == TO_INT:
             c1 = start.value
           elif start.type == TO_RT:
-            try:
-              c1 = this->getvar(start.value.strip(), start.level)
+              try : c1 = this->getvar(start.value.strip(), start.level)
               c1 = c1.value
             except: 
               c1 = NULL
@@ -2261,8 +2236,7 @@ class Interpreter:
           if stop.type == TO_INT:
             c2 = stop.value
           elif stop.type == TO_RT:
-            try:
-              c2 = this->getvar(stop.value.strip(), stop.level)
+                try : c2 = this->getvar(stop.value.strip(), stop.level)
               c2 = c2.value
             except: 
               c2 = NULL
@@ -2271,8 +2245,7 @@ class Interpreter:
           if increment.type == TO_INT:
             c3 = increment.value
           elif increment.type == TO_RT:
-            try:
-              c3 = this->getvar(increment.value.strip(), increment.level)
+                  try : c3 = this->getvar(increment.value.strip(), increment.level)
               c3 = c3.value
             except: 
               c3 = NULL
@@ -2311,8 +2284,8 @@ class Interpreter:
       if current_command.command == 'del':
         name = current_command.args[0]
         args = current_command.args[1].copy()
-        
-        try:
+
+                    try:
           for i in range(len(args)):
             if args[i].type == TO_LSBRACKET or args[i].type == TO_RSBRACKET:
               del args[i]
@@ -2340,50 +2313,38 @@ class Interpreter:
       if current_command.command == 'var':// interprit the raw token as variables and get the values. something to do tomoz. :) i want to die btw
 
         values = current_command.args[1];
-        
-        assignvalue = this->parsevalues(values)
-        
-        assignlevel = current_command.args[2]
-        level = current_command.args[2]
-        for o in range(level):
-        
-          if o == level:
-            assignlevel = level
-            break
-          if len(variables[o]) != 0:
-            if current_command.args[0] in list(variables[o]):
-              
-              assignlevel = o
-              break
-            
-          else:
-            assignlevel -= 1
 
-        if classAppend != NULL:
-          classAppend.cl[classAppend.class_name].inherit_list[classAppend.mode][current_command.args[0]] = assignvalue[0]
-          
-          
-        else:
-          variables[assignlevel][current_command.args[0]] = assignvalue[0]        
-      if (current_command.command == "savedVar"):
+          assignvalue = this->parsevalues(values)
 
-        var_name = current_command.args[0]
-        var_val = current_command.args[1][1].value
+                            assignlevel = current_command.args[2] level = current_command.args[2] for o in range(level) :
 
+              if o == level :
+              assignlevel = level break if len (variables[o]) != 0 :
+              if current_command.args[0] in list(variables[o]) :
 
-        globals()["saved_variables"][var_name] = Token(TO_RT, var_val)
-      
-      if (current_command.command == "savedVarDelete"):
+              assignlevel = o break
 
-        
-        var_name = current_command.args[0]
+              else :
+              assignlevel -= 1
 
-        std::cout << var_name)
-        if var_name == "__all__":
-          saved_variables = {}
-        else:
-          try:
-            del saved_variables[var_name]
+                             if classAppend != NULL :
+              classAppend.cl[classAppend.class_name].inherit_list[classAppend.mode][current_command.args[0]] = assignvalue[0]
+
+              else :
+              variables[assignlevel][current_command.args[0]] = assignvalue[0] if (current_command.command == "savedVar") :
+
+              var_name = current_command.args[0] var_val = current_command.args[1][1].value
+
+                                                               globals()["saved_variables"][var_name] = Token(TO_RT, var_val)
+
+                  if (current_command.command == "savedVarDelete") :
+
+              var_name = current_command.args[0]
+
+                         std::cout
+                         << var_name) if var_name == "__all__" :
+              saved_variables = {} else:
+          try : del saved_variables[var_name]
           except:
             pass
 
@@ -2459,58 +2420,62 @@ class Interpreter:
             if argslist[i] == []:
               
                 Error("UserFunction", calledfunctionargs[0].line, fileControl.fileName, f"required arg {calledfunctionargs[i].value} is empty");
-            argslist[i] = this->parsevalues(argslist[i]);
-            funcvariables[calledfunctionargs[i].value] = argslist[i][0];
-        
-        returner = this->functionrun(runner,funcvariables);
-        
-        //argslist = this->parsevalues(argslist)
-        
-        if (returner != NULL){
-          return returner;
-        }
+          argslist[i] = this->parsevalues(argslist[i]);
+          funcvariables[calledfunctionargs[i].value] = argslist[i][0];
 
-      if (current_command.command == "extern"){
+          returner = this->functionrun(runner, funcvariables);
 
-        cmd = current_command.args[0];
-        args = current_command.args[1];
+          // argslist = this->parsevalues(argslist)
 
-        if (not cmd.strip() in imported_functions){
-          Error("Import", "NULL", "NULL", "NULL" );
+          if (returner != NULL)
+          {
+            return returner;
+          }
 
-        external_cmd = imported_functions[cmd]
-        external_cmd(args)
-      }
-      if (current_command.command == "this"){
+          if (current_command.command == "extern")
+          {
 
+            cmd = current_command.args[0];
+            args = current_command.args[1];
 
-        if (current_command.args[0].type == TO_SPECIALCHARACTERS and current_command.args[0].value == "->"){
+            if (not cmd.strip() in imported_functions)
+            {
+              Error("Import", "NULL", "NULL", "NULL");
 
-          runner_list = current_command.args[1:]
+              external_cmd = imported_functions[cmd] external_cmd(args)
+            }
+            if (current_command.command == "this")
+            {
 
+              if (current_command.args[0].type == TO_SPECIALCHARACTERS and current_command.args[0].value == "->")
+              {
 
-          this->selfrun(runner_list[0], classAppend = variables[current_command.args[0].level - 1]["__internal"])
-        }
-      }
-      if (current_command.command == "class"){
+                runner_list = current_command.args [1:]
 
-        variables[current_command.args[0].level]["__internal"].class_name = current_command.args[0].value
-        
-        variables[current_command.args[0].level]["__internal"].isClass = true
-        
-        uninitialized_classes[current_command.args[0].value] = current_command.args[0].level
+                              this->selfrun(runner_list[0], classAppend = variables[current_command.args[0].level - 1]["__internal"])
+              }
+            }
+            if (current_command.command == "class")
+            {
 
-        variables[current_command.args[0].level]["__internal"].cl[current_command.args[0].value] = Classes({
-          "public":{},
-          "inherit":{},
-          "private":{}
-        })
+              variables[current_command.args[0].level]["__internal"].class_name = current_command.args[0].value
 
+                                                                                      variables[current_command.args[0].level]["__internal"]
+                                                                                          .isClass = true
 
-        this->selfrun(current_command.args[2])
-      }
+                  uninitialized_classes[current_command.args[0].value] = current_command.args[0].level
 
-      if current_command.command == "new":
+                                                                             variables[current_command.args[0].level]["__internal"]
+                                                                                 .cl[current_command.args[0].value] = Classes({
+                                                                                                                        "public" : {},
+                                                                                                                        "inherit" : {},
+                                                                                                                        "private" : {}
+                                                                                                                      })
+
+                                                                                                                          this->selfrun(current_command.args[2])
+            }
+
+            if current_command.command == "new":
 
         del current_command.args[1][1]
         
@@ -2642,37 +2607,36 @@ class Interpreter:
         code = current_command.args[1]
         code = code[0]
 
-        try:
-          float(condition[0])
-        except:
-          pass
+              try:
+                float(condition[0])
+                        except : pass
 
-        if condition[0].type != TO_STRING and condition[0].value in variables:
-          pass
+                                 if condition[0]
+                                     .type != TO_STRING and condition[0].value in variables : pass
 
-        while (1){
-          res = this->checkBooleanCondition(condition);
-          std::cout << res;
-          if (res)
-            this->selfrun(code);
-          else
-            break;
-        }
-      command_list = store_list;
+                                                                                              while (1)
+                {
+                  res = this->checkBooleanCondition(condition);
+                  std::cout << res;
+                  if (res)
+                    this->selfrun(code);
+                  else
+                    break;
+                }
+            command_list = store_list;
 
+            // END OF CLASSES AND COMMANDS
+            Settings = lambda f : json.load(open(f))
+                                      settings = Settings("settings.json")
 
-// END OF CLASSES AND COMMANDS
-Settings = lambda f :  json.load(open(f))
-settings = Settings("settings.json")
+            try :
 
-try: 
-
-  /*
-  for (int i = 0; i < 2000; i++){
-    variables[i] = {"__internal":Level_Handler()
-  }
-  */
-  fileControl = fileInput()
+                /*
+                for (int i = 0; i < 2000; i++){
+                  variables[i] = {"__internal":Level_Handler()
+                }
+                */
+                fileControl = fileInput()
 
   saved_handler = JSON_saver()
   saved_variables = saved_handler.read(settings["dataFile"])
@@ -2693,8 +2657,8 @@ try:
     return r
 
   for i in range(len(text)):
-    
-    try: t = text[i][-1]
+
+              try : t = text[i][-1]
     except: continue
     if text[i][-1] == " ": 
       text[i] = removeLast(text[i])
@@ -2745,9 +2709,10 @@ except Exception as e:
   
   std::cout << 'Uncaught Error! Code: << type(e)._name__ << "Message: " << str(e);
   
-  if (settings["autoDumpError"] == false){
-    dump = input("Dump Error to log.txt? y/n: ");
-  }
+  if (settings["autoDumpError"] == false)
+                {
+                  dump = input("Dump Error to log.txt? y/n: ");
+                }
   else
     dump = "y"
 
@@ -2769,10 +2734,5 @@ globals__ = globals()
 keys = list(globals__.keys())
 for y in range(len(globals__)):
   try:
-    if keys[y] != "globals__":
-      del (globals__[keys[y]])
-    else:
-      continue
-  except IndexError:
-    break
-del globals__, keys, y 
+    if keys
+  [y] != "globals__" : del(globals__[keys[y]]) else : continue except IndexError : break del globals__, keys, y
